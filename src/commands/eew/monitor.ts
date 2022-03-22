@@ -17,25 +17,31 @@ export default class extends Command {
     }
 
     public async run(client: EEWBot, interaction: CommandInteraction): Promise<void> {
-        await EEWMonitor();
-        await interaction.followUp({
-            files: [
-                'dat/nowMonitor.png',
-            ],
-        });
+        const result = await EEWMonitor();
+        if (result) {
+            await interaction.followUp({
+                files: [
+                    'dat/nowMonitor.png',
+                ],
+            });
+        }
+        else {
+            await interaction.followUp('取得に失敗しました');
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async run_message(client: EEWBot, message: Message, args: string[]): Promise<void> {
-        try {
-            await EEWMonitor();
+        const result = await EEWMonitor();
+        if (result) {
+            await message.reply({
+                files: [
+                    'dat/nowMonitor.png',
+                ],
+            });
         }
-        // eslint-disable-next-line no-empty
-        catch (e) { }
-        await message.reply({
-            files: [
-                'dat/nowMonitor.png',
-            ],
-        });
+        else {
+            await message.reply('取得に失敗しました');
+        }
     }
 }
