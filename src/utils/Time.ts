@@ -1,6 +1,6 @@
 // EEW用の時間(yyyyMMdd--)を取得(2秒遅延させてます)
 export function getEEWTime(): string {
-    const date = new Date();
+    const date = new Date(new Date().toLocaleString('JST'));
     date.setSeconds(date.getSeconds() - 2);
 
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
