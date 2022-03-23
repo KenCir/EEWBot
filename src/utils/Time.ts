@@ -1,4 +1,4 @@
-// EEW用の時間(yyyyMMdd--)を取得(2秒遅延させてます)
+// EEW用の時間(yyyyMMdd--)を取得(4秒遅延させてます)
 export function getEEWTime(): string {
     const date = new Date(new Date().toLocaleString('JST'));
     date.setSeconds(date.getSeconds() - 2);

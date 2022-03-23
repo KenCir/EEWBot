@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import axios from 'axios';
+import fetch from 'node-fetch';
 import { createWriteStream } from 'fs';
 import sharp from 'sharp';
 import { getEEWTime } from '../utils/Time';
@@ -8,22 +6,26 @@ import { getEEWTime } from '../utils/Time';
 export default async () => {
     try {
         const remoteBaseURL = 'http://www.kmoni.bosai.go.jp/data/map_img/';
-        const date = new Date();
-        date.setSeconds(date.getSeconds() - 2);
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        const monitor = await axios.get(`${remoteBaseURL}RealTimeImg/jma_s/${getEEWTime()}.jma_s.gif`, {
-            responseType: 'stream',
-            proxy: false,
-        });
-        monitor.data.pipe(createWriteStream('dat/monitor.png'));
+        const monitor = await fetch(`${remoteBaseURL}RealTimeImg/jma_s/${getEEWTime()}.jma_s.gif`);
+        if (!monitor.ok || !monitor.body) {
+            console.log(monitor);
+            console.error('NOT OK');
+            return;
+        }
+
+        monitor.body.pipe(createWriteStream('dat/monitor.png'));
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        const PSMoniter = await axios.get(`${remoteBaseURL}PSWaveImg/eew/${date.getFullYear()}${('0' + (date.getMonth() + 1)).slice(-2)}${('0' + date.getDate()).slice(-2)}/${getEEWTime()}.eew.gif`, {
-            responseType: 'stream',
-            proxy: false,
-        });
-        PSMoniter.data.pipe(createWriteStream('dat/PSWave.png'));
+        const PSMoniter = await fetch(`${remoteBaseURL}PSWaveImg/eew/${getEEWTime()}.eew.gif`);
+        if (!PSMoniter.ok || !PSMoniter.body) {
+            console.log(PSMoniter);
+            console.error('NOT OK');
+            return;
+        }
+
+        PSMoniter.body.pipe(createWriteStream('dat/PSWave.png'));
 
         await sharp('dat/baseMonitor.png')
             .composite([
@@ -36,6 +38,7 @@ export default async () => {
         return true;
     }
     catch (e) {
+        console.error(e);
         return false;
     }
 };

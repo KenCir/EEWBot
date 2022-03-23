@@ -30,10 +30,15 @@ export default class extends Command {
                 new MessageEmbed()
                     .setTitle(`${client.user?.tag as string} HELP`)
                     .addField('メインコマンド', client.commands.filter(x => x.category == 'main').map((x) => '`' + x.name + '`').join(', '))
+                    .addField('EEWコマンド', client.commands.filter(x => x.category == 'eew').map((x) => '`' + x.name + '`').join(', '))
                     .setColor('RANDOM'),
                 new MessageEmbed()
                     .setTitle('メインコマンド')
                     .setDescription(codeBlock(client.commands.filter(x => x.category == 'main').map((x) => `${process.env.PREFIX as string}${x.name} ${x.usage}: ${x.description}`).join('\n')))
+                    .setColor('RANDOM'),
+                new MessageEmbed()
+                    .setTitle('EEWコマンド')
+                    .setDescription(codeBlock(client.commands.filter(x => x.category == 'eew').map((x) => `${process.env.PREFIX as string}${x.name} ${x.usage}: ${x.description}`).join('\n')))
                     .setColor('RANDOM'),
             );
             /*
@@ -138,10 +143,15 @@ export default class extends Command {
                 new MessageEmbed()
                     .setTitle(`${client.user?.tag as string} HELP`)
                     .addField('メインコマンド', client.commands.filter(x => x.category == 'main').map((x) => '`' + x.name + '`').join(', '))
+                    .addField('メインコマンド', client.commands.filter(x => x.category == 'eew').map((x) => '`' + x.name + '`').join(', '))
                     .setColor('RANDOM'),
                 new MessageEmbed()
                     .setTitle('メインコマンド')
                     .setDescription(codeBlock(client.commands.filter(x => x.category == 'main').map((x) => `${process.env.PREFIX as string}${x.name} ${x.usage}: ${x.description}`).join('\n')))
+                    .setColor('RANDOM'),
+                new MessageEmbed()
+                    .setTitle('EEWコマンド')
+                    .setDescription(codeBlock(client.commands.filter(x => x.category == 'eew').map((x) => `${process.env.PREFIX as string}${x.name} ${x.usage}: ${x.description}`).join('\n')))
                     .setColor('RANDOM'),
             );
             /*
