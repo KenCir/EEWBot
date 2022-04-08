@@ -1,3 +1,3 @@
 # 地震通知Bot
 
-おうち鯖用の地震通知Bot
+Discordの地震通知Bot
