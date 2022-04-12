@@ -1,8 +1,8 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, CacheType, MessageEmbed, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageSelectMenu } from "discord.js";
-import EEWBot from "../../EEWBot";
-import { Command } from "../../interfaces/Command";
-import { intensityStringToNumber, intensityNumberToString } from "../../utils/IntensityUtil";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { CommandInteraction, CacheType, MessageEmbed, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageSelectMenu } from 'discord.js';
+import EEWBot from '../../EEWBot';
+import { Command } from '../../interfaces/Command';
+import { intensityStringToNumber, intensityNumberToString } from '../../utils/IntensityUtil';
 
 export default class extends Command {
     public constructor() {
@@ -131,10 +131,12 @@ export default class extends Command {
                 ],
             });
         }
+        // eslint-disable-next-line no-empty
         else if (interaction.options.getSubcommand() === 'quakeinfo') {
         }
     }
 
+    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
     public async run_message(client: EEWBot, message: Message<boolean>, args: string[]): Promise<void> {
     }
 }
