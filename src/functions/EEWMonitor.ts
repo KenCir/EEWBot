@@ -2,8 +2,9 @@ import { createWriteStream, WriteStream } from 'fs';
 import { getEEWTime } from '../utils/Time';
 import { read } from 'jimp';
 import axios from 'axios';
+import EEWBot from '../EEWBot';
 
-export default async (): Promise<boolean> => {
+export default async (client: EEWBot): Promise<void> => {
   try {
     const remoteBaseURL = 'http://www.kmoni.bosai.go.jp/data/map_img/';
     let tryCount = 0;
@@ -12,13 +13,6 @@ export default async (): Promise<boolean> => {
       tryCount++;
 
       try {
-        /*
-        const monitor = await fetch({
-          url: `${remoteBaseURL}RealTimeImg/jma_s/${getEEWTime(tryCount)}.jma_s.gif`,
-          timeout: 5000,
-        } as RequestInfo);
-        */
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         const monitor = await axios.get<WriteStream>(`${remoteBaseURL}RealTimeImg/jma_s/${getEEWTime(tryCount)}.jma_s.gif`, {
           timeout: 100,
           responseType: 'stream',
@@ -43,19 +37,20 @@ export default async (): Promise<boolean> => {
       }
     }
 
-    const img = await read('dat/baseMonitor.png');
-    const monitorImg = await read('dat/monitor.png');
-    const psWaveImg = await read('dat/PSWave.png');
-    const baseJMA = await read('dat/baseJMA.png');
-    img.blit(monitorImg, 0, 0);
-    img.blit(psWaveImg, 0, 0);
-    img.blit(baseJMA, 310, 90);
-    await img.writeAsync('dat/nowMonitor.png');
-
-    return true;
+    try {
+      const img = await read('dat/baseMonitor.png');
+      const monitorImg = await read('dat/monitor.png');
+      const psWaveImg = await read('dat/PSWave.png');
+      const baseJMA = await read('dat/baseJMA.png');
+      img.blit(monitorImg, 0, 0);
+      img.blit(psWaveImg, 0, 0);
+      img.blit(baseJMA, 310, 90);
+      await img.writeAsync('dat/nowMonitor.png');
+    }
+    // eslint-disable-next-line no-empty
+    catch (e) { }
   }
   catch (e) {
-    console.log(e);
-    return false;
+    client.logger.error(e);
   }
 };

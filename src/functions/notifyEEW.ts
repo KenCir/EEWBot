@@ -1,26 +1,17 @@
 import { codeBlock } from '@discordjs/builders';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { MessageEmbed, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { EEWData } from '../interfaces/EEWData';
-import EEWMonitor from './EEWMonitor';
 
 let oldEEWData: EEWData | null = null;
-let oldMsg: Message | null = null;
 
 export default async (client: EEWBot, eewData: EEWData) => {
     if (eewData.report === 'cancel') {
-        if (oldMsg) {
-            await (client.channels.cache.get('888014129120567316') as TextChannel).send('EEWReport Canceled');
-        }
+        await (client.channels.cache.get('888014129120567316') as TextChannel).send('EEWReport Canceled');
 
         await (client.channels.cache.get('953857133911363614') as TextChannel).send('EEWReport Canceled');
 
         return;
-    }
-
-    if (oldMsg) {
-        void oldMsg.delete().catch();
-        oldMsg = null;
     }
 
     let diff = '';
@@ -48,13 +39,7 @@ export default async (client: EEWBot, eewData: EEWData) => {
 
     // 震度3未満
     if (eewData.intensity < 3) {
-        void EEWMonitor()
-            .then(result => {
-                if (result) {
-                    void (client.channels.cache.get('953857133911363614') as TextChannel).send({ files: ['dat/nowMonitor.png'] });
-                }
-            });
-
+        // eslint-disable-next-line no-lonely-if
         if (oldEEWData && diff.length > 0) {
             await (client.channels.cache.get('953857133911363614') as TextChannel).send({
                 content: codeBlock(diff),
@@ -69,6 +54,9 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('AQUA')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
@@ -85,22 +73,17 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('AQUA')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
     }
     // 震度3・4
     else if (eewData.intensity < 5) {
-        void EEWMonitor()
-            .then(result => {
-                if (result) {
-                    // void (client.channels.cache.get('888014129120567316') as TextChannel).send({ files: ['dat/nowMonitor.png'] });
-                    void (client.channels.cache.get('953857133911363614') as TextChannel).send({ files: ['dat/nowMonitor.png'] });
-                }
-            });
-
         if (oldEEWData && diff.length > 0) {
-            oldMsg = await (client.channels.cache.get('888014129120567316') as TextChannel).send({
+            await (client.channels.cache.get('888014129120567316') as TextChannel).send({
                 content: codeBlock(diff),
                 embeds: [
                     new MessageEmbed()
@@ -114,10 +97,13 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .setColor('YELLOW')
                         .setTimestamp(),
                 ],
+                files: [
+                    'dat/nowMonitor.png',
+                ],
             });
         }
         else if (!oldEEWData) {
-            oldMsg = await (client.channels.cache.get('888014129120567316') as TextChannel).send({
+            await (client.channels.cache.get('888014129120567316') as TextChannel).send({
                 embeds: [
                     new MessageEmbed()
                         .setTitle(`緊急地震速報(予報) 第${eewData.report === 'final' ? '最終' : eewData.report}報`)
@@ -129,6 +115,9 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('YELLOW')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
@@ -148,6 +137,9 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .setColor('YELLOW')
                         .setTimestamp(),
                 ],
+                files: [
+                    'dat/nowMonitor.png',
+                ],
             });
         }
         else if (!oldEEWData) {
@@ -163,21 +155,17 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('YELLOW')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
     }
+    // 震度5弱以上
     else {
-        void EEWMonitor()
-            .then(result => {
-                if (result) {
-                    void (client.channels.cache.get('888014129120567316') as TextChannel).send({ files: ['dat/nowMonitor.png'] });
-                    void (client.channels.cache.get('953857133911363614') as TextChannel).send({ files: ['dat/nowMonitor.png'] });
-                }
-            });
-
         if (oldEEWData && diff.length > 0) {
-            oldMsg = await (client.channels.cache.get('888014129120567316') as TextChannel).send({
+            await (client.channels.cache.get('888014129120567316') as TextChannel).send({
                 content: codeBlock(diff),
                 embeds: [
                     new MessageEmbed()
@@ -191,10 +179,13 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .setColor('RED')
                         .setTimestamp(),
                 ],
+                files: [
+                    'dat/nowMonitor.png',
+                ],
             });
         }
         else if (!oldEEWData) {
-            oldMsg = await (client.channels.cache.get('888014129120567316') as TextChannel).send({
+            await (client.channels.cache.get('888014129120567316') as TextChannel).send({
                 embeds: [
                     new MessageEmbed()
                         .setTitle(`緊急地震速報(予報) 第${eewData.report === 'final' ? '最終' : eewData.report}報`)
@@ -206,6 +197,9 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('RED')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
@@ -225,6 +219,9 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .setColor('RED')
                         .setTimestamp(),
                 ],
+                files: [
+                    'dat/nowMonitor.png',
+                ],
             });
         }
         else if (!oldEEWData) {
@@ -240,10 +237,14 @@ export default async (client: EEWBot, eewData: EEWData) => {
                         .addField('経度', eewData.longitude.toString(), true)
                         .setColor('RED')
                         .setTimestamp(),
+                ],
+                files: [
+                    'dat/nowMonitor.png',
                 ],
             });
         }
     }
 
     oldEEWData = eewData;
+    if (eewData.report === 'final') oldEEWData = null;
 };

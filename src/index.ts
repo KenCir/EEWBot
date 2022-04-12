@@ -7,6 +7,8 @@ import EEWBot from './EEWBot';
 import { EEWData } from './interfaces/EEWData';
 import notifyEEWData from './functions/notifyEEW';
 import { Command } from './interfaces/Command';
+import { QuakeInfoData } from './interfaces/QuakeInfoData';
+import notifyQuakeInfo from './functions/notifyQuakeInfo';
 config();
 const app: express.Express = express();
 const client = new EEWBot();
@@ -15,17 +17,22 @@ app.use(express.urlencoded({
     extended: true,
 }));
 app.use(express.json());
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(logger('dev'));
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.status(200).send('Hello World').end();
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.post('/eew', (req: express.Request, res: express.Response) => {
     const eewData: EEWData = req.body as EEWData;
     void notifyEEWData(client, eewData);
+
+    res.status(204).end();
+});
+
+app.post('/quakeinfo', (req: express.Request, res: express.Response) => {
+    const quakeInfoData: QuakeInfoData = req.body as QuakeInfoData;
+    void notifyQuakeInfo(client, quakeInfoData);
 
     res.status(204).end();
 });
@@ -57,7 +64,7 @@ readdirSync(join(__dirname, '/events/discord/'))
 const commandFolders = readdirSync(join(__dirname, '/commands'));
 for (const folder of commandFolders) {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    readdirSync(join(__dirname, '/commands/', folder)).filter((file) => file.endsWith('.ts'))
+    readdirSync(join(__dirname, '/commands/', folder))
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         .forEach(async file => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

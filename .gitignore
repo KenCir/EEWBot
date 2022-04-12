@@ -165,3 +165,6 @@ Temporary Items
 dat/monitor.png
 dat/nowMonitor.png
 dat/PSWave.png
+eew.db
+eew.db-shm
+eew.db-wal
