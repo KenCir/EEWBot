@@ -1,5 +1,5 @@
 import { createWriteStream, WriteStream } from 'fs';
-import { getEEWTime } from '../utils/Time';
+import { getMonitorTime } from '../utils/Time';
 import { read } from 'jimp';
 import axios from 'axios';
 import EEWBot from '../EEWBot';
@@ -13,7 +13,7 @@ export default async (client: EEWBot): Promise<void> => {
       tryCount++;
 
       try {
-        const monitor = await axios.get<WriteStream>(`${remoteBaseURL}RealTimeImg/jma_s/${getEEWTime(tryCount)}.jma_s.gif`, {
+        const monitor = await axios.get<WriteStream>(`${remoteBaseURL}RealTimeImg/jma_s/${getMonitorTime(tryCount)}.jma_s.gif`, {
           timeout: 100,
           responseType: 'stream',
         });
@@ -23,7 +23,7 @@ export default async (client: EEWBot): Promise<void> => {
         }
         monitor.data.pipe(createWriteStream('dat/monitor.png'));
 
-        const PSMoniter = await axios.get<WriteStream>(`${remoteBaseURL}PSWaveImg/eew/${getEEWTime(tryCount)}.eew.gif`, {
+        const PSMoniter = await axios.get<WriteStream>(`${remoteBaseURL}PSWaveImg/eew/${getMonitorTime(tryCount)}.eew.gif`, {
           timeout: 100,
           responseType: 'stream',
         });

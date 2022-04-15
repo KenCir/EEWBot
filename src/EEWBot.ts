@@ -2,11 +2,13 @@ import { Client, Collection, Intents } from 'discord.js';
 import { getLogger, configure, shutdown, Logger } from 'log4js';
 import { Command } from './interfaces/Command';
 import Database from './database/Database';
+import { QuakeInfoData } from './interfaces/QuakeInfoData';
 
 export default class EEWBot extends Client {
     public readonly logger: Logger;
     public readonly commands: Collection<string, Command>;
     public readonly database: Database;
+    public latestQuakeInfo: QuakeInfoData | null;
 
     public constructor() {
         super({
@@ -34,6 +36,7 @@ export default class EEWBot extends Client {
         this.logger = getLogger('EEWBot');
         this.commands = new Collection();
         this.database = new Database();
+        this.latestQuakeInfo = null;
     }
 
     public shutdown(): void {

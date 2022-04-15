@@ -6,11 +6,9 @@ $rawReportXML = mb_convert_encoding(file_get_contents("{$baseURL}data/JishinRepo
 $reportXML = explode("\n", $rawReportXML, 2);
 $xmlData = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?>' . $reportXML[1]);
 $rawLatestQuakeInfo = mb_convert_encoding(file_get_contents($xmlData->record[0]->item[0]["url"]), "UTF-8", "SJIS");
-$rawLatestQuakeInfo = mb_convert_encoding(file_get_contents("{$baseURL}data/JSA0220408220500_20220408220844.xml"), "UTF-8", "SJIS");
 $latestQuakeInfoData = explode("\n", $rawLatestQuakeInfo, 2);
 $latestQuakeInfo = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?>' . $latestQuakeInfoData[1]);
 $relatives = [];
-var_dump($xmlData->record[0]->item[0]);
 foreach ($latestQuakeInfo->Earthquake->Relative->children() as $relative) {
     $relatives[(string)$relative["Intensity"]] = array(
         "intensity" => (string)$relative["Intensity"],

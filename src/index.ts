@@ -4,8 +4,6 @@ import express from 'express';
 import { config } from 'dotenv';
 import logger from 'morgan';
 import EEWBot from './EEWBot';
-import { EEWData } from './interfaces/EEWData';
-import notifyEEWData from './functions/notifyEEW';
 import { Command } from './interfaces/Command';
 import { QuakeInfoData } from './interfaces/QuakeInfoData';
 import notifyQuakeInfo from './functions/notifyQuakeInfo';
@@ -23,16 +21,10 @@ app.get('/', (req: express.Request, res: express.Response) => {
     res.status(200).send('Hello World').end();
 });
 
-app.post('/eew', (req: express.Request, res: express.Response) => {
-    const eewData: EEWData = req.body as EEWData;
-    void notifyEEWData(client, eewData);
-
-    res.status(204).end();
-});
-
 app.post('/quakeinfo', (req: express.Request, res: express.Response) => {
     const quakeInfoData: QuakeInfoData = req.body as QuakeInfoData;
-    void notifyQuakeInfo(client, quakeInfoData);
+    client.latestQuakeInfo = quakeInfoData;
+    notifyQuakeInfo(client, quakeInfoData);
 
     res.status(204).end();
 });
