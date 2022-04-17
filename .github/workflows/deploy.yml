@@ -33,7 +33,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Deploy
-        run: rsync -av -rlptgoD --delete --exclude ".git/" --exclude ".env" --exclude "*.db" --exclude "*.db-shm" --exclude "*.db-wal" --exclude "dat/backup" --exclude "dat/images" --exclude "dat/texts" --exclude "dat/voices" --exclude "node_modules/" -e "ssh -i ./key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p ${SSH_PORT}" ./ $SSH_USER@$SSH_HOST:$DEPLOY_PATH
+        run: rsync -av -rlptgoD --delete --exclude ".git/" --exclude ".env" --exclude "*.db" --exclude "*.db-shm" --exclude "*.db-wal" --exclude "dat/backup" --exclude "node_modules/" -e "ssh -i ./key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p ${SSH_PORT}" ./ $SSH_USER@$SSH_HOST:$DEPLOY_PATH
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_PORT: ${{ secrets.SSH_PORT }}

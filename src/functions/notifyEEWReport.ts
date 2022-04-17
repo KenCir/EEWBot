@@ -7,6 +7,7 @@ import { getEEWTime } from '../utils/Time';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
 
 let oldEEWData: EEWReportData | null = null;
+let finaled = false;
 
 export default async (client: EEWBot) => {
     try {
@@ -20,7 +21,7 @@ export default async (client: EEWBot) => {
 
         // ?
         if (eewData.result.status !== 'success' || eewData.result.message === 'データがありません') return;
-        else if (eewData.report_num === oldEEWData?.report_num) return;
+        else if (eewData.report_num === oldEEWData?.report_num || finaled) return;
 
         let diff = '';
         if (oldEEWData) {
@@ -196,9 +197,11 @@ export default async (client: EEWBot) => {
 
         if (eewData.is_final) {
             oldEEWData = null;
+            finaled = true;
         }
         else {
             oldEEWData = eewData;
+            finaled = false;
         }
     }
     // eslint-disable-next-line no-empty
