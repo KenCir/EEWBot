@@ -57,8 +57,8 @@ export default class extends Command {
                         ),
                 ],
             }) as Message;
-            const setupFilter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-            const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: setupFilter });
+            const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
+            const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
             if (responseSetup.customId === 'no') {
                 await responseSetup.update({
                     content: '緊急地震速報通知セットアップをキャンセルしました',
@@ -125,18 +125,61 @@ export default class extends Command {
             const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
             const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
             const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
-            client.database.addEEWChannel(interaction.channelId, intensity, []);
+
             await responseIntensity.update({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle('緊急地震速報通知セットアップ完了')
-                        .setDescription('緊急地震速報通知セットアップが完了しました')
-                        .addField('通知最小震度', intensityNumberToString(intensity))
-                        .addField('通知時にメンションするロール', 'なし')
+                        .setTitle('緊急地震速報通知のセットアップ')
+                        .setDescription('M3.5以上が予想される緊急地震速報を通知しますか？')
                         .setColor('RANDOM'),
                 ],
-                components: [],
+                components: [
+                    new MessageActionRow()
+                        .addComponents(
+                            new MessageButton()
+                                .setCustomId('ok')
+                                .setEmoji('✅')
+                                .setStyle('PRIMARY'),
+                            new MessageButton()
+                                .setCustomId('no')
+                                .setEmoji('❌')
+                                .setStyle('PRIMARY'),
+                        ),
+                ],
             });
+            const responseM = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+            if (responseM.customId === 'ok') {
+                client.database.addEEWChannel(interaction.channelId, intensity, [], 1);
+
+                await responseM.update({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle('緊急地震速報通知セットアップ完了')
+                            .setDescription('緊急地震速報通知セットアップが完了しました')
+                            .addField('通知最小震度', intensityNumberToString(intensity))
+                            .addField('M3.5以上', '通知する')
+                            .addField('通知時にメンションするロール', 'なし')
+                            .setColor('RANDOM'),
+                    ],
+                    components: [],
+                });
+            }
+            else if (responseM.customId === 'no') {
+                client.database.addEEWChannel(interaction.channelId, intensity, [], 0);
+
+                await responseM.update({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle('緊急地震速報通知セットアップ完了')
+                            .setDescription('緊急地震速報通知セットアップが完了しました')
+                            .addField('通知最小震度', intensityNumberToString(intensity))
+                            .addField('M3.5以上', '通知しない')
+                            .addField('通知時にメンションするロール', 'なし')
+                            .setColor('RANDOM'),
+                    ],
+                    components: [],
+                });
+            }
         }
         else if (interaction.options.getSubcommand() === 'quakeinfo') {
             const setupMsg: Message = await interaction.followUp({

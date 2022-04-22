@@ -19,7 +19,7 @@ export default class Database {
         // 緊急地震速報を通知するチャンネル
         const eewChannelTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'eew_channels\';').get();
         if (!eewChannelTable['count(*)']) {
-            this.sql.prepare('CREATE TABLE eew_channels (channelid TEXT PRIMARY KEY, min_intensity INTEGER, mention_roles TEXT);').run();
+            this.sql.prepare('CREATE TABLE eew_channels (channelid TEXT PRIMARY KEY, min_intensity INTEGER, mention_roles TEXT, magnitude INTEGER);').run();
             this.sql.prepare('CREATE UNIQUE INDEX idx_eew_channels_id ON eew_channels (channelid);').run();
         }
 
@@ -32,6 +32,10 @@ export default class Database {
 
         this.sql.pragma('synchronous = 1');
         this.sql.pragma('journal_mode = wal');
+    }
+
+    public shutdown(): void {
+        this.sql.close();
     }
 
     /**
@@ -84,11 +88,22 @@ export default class Database {
     }
 
     /**
+     * 緊急地震速報を通知するチャンネルをM3.5以上を通知するか絞り込んで取得
+     */
+    public getAllEEWChannel_Magnitude(): Array<EEWChannelData> {
+        const datas = this.sql.prepare('SELECT * FROM eew_channels WHERE magnitude = 1;').all();
+        for (const data of datas) {
+            data.mention_roles = JSON.parse(data.mention_roles);
+        }
+        return datas as Array<EEWChannelData>;
+    }
+
+    /**
      * 緊急地震速報を通知するチャンネルを追加する
      */
-    public addEEWChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>): void {
+    public addEEWChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>, magnitude: number): void {
         if (this.getEEWChannel(channelId)) return;
-        this.sql.prepare('INSERT INTO eew_channels VALUES (?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles));
+        this.sql.prepare('INSERT INTO eew_channels VALUES (?, ?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles), magnitude);
     }
 
     /**

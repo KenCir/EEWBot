@@ -18,4 +18,9 @@ export interface EEWChannelData {
      * 通知時にメンションするロールID配列
      */
     mention_roles: Array<string>;
+
+    /**
+     * M3.5以上の地震を通知するか
+     */
+    magnitude: number;
 }

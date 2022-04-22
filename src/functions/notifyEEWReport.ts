@@ -7,21 +7,23 @@ import { getEEWTime } from '../utils/Time';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
 
 let oldEEWData: EEWReportData | null = null;
-let finaled = false;
 
 export default async (client: EEWBot) => {
     try {
         const remoteURL = 'http://www.kmoni.bosai.go.jp/webservice/hypo/eew/';
-
-        const eewResponse = await axios.get(`${remoteURL}${getEEWTime(-1)}.json`, {
-            timeout: 30,
-        });
-
+        const eewResponse = await axios.get(`${remoteURL}${getEEWTime(-1)}.json`);
         const eewData: EEWReportData = eewResponse.data as EEWReportData;
 
-        // ?
         if (eewData.result.status !== 'success' || eewData.result.message === 'データがありません') return;
-        else if (eewData.report_num === oldEEWData?.report_num || finaled) return;
+        else if (eewData.report_num === oldEEWData?.report_num) return;
+
+        if (oldEEWData?.is_final) {
+            oldEEWData = null;
+        }
+
+        if (!oldEEWData) {
+            void client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`);
+        }
 
         let diff = '';
         if (oldEEWData) {
@@ -195,14 +197,7 @@ export default async (client: EEWBot) => {
                 }
             });
 
-        if (eewData.is_final) {
-            oldEEWData = null;
-            finaled = true;
-        }
-        else {
-            oldEEWData = eewData;
-            finaled = false;
-        }
+        oldEEWData = eewData;
     }
     // eslint-disable-next-line no-empty
     catch (e) {

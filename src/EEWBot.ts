@@ -3,12 +3,14 @@ import { getLogger, configure, shutdown, Logger } from 'log4js';
 import { Command } from './interfaces/Command';
 import Database from './database/Database';
 import { QuakeInfoData } from './interfaces/QuakeInfoData';
+import VOICEVOXClient from './utils/VOICEVOXClient';
 
 export default class EEWBot extends Client {
     public readonly logger: Logger;
     public readonly commands: Collection<string, Command>;
     public readonly database: Database;
     public latestQuakeInfo: QuakeInfoData | null;
+    public readonly voicevoxClient: VOICEVOXClient;
 
     public constructor() {
         super({
@@ -16,6 +18,7 @@ export default class EEWBot extends Client {
                 Intents.FLAGS.GUILDS,
                 Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.GUILD_INTEGRATIONS,
+                Intents.FLAGS.GUILD_VOICE_STATES,
             ],
             allowedMentions: {
                 parse: [],
@@ -37,10 +40,16 @@ export default class EEWBot extends Client {
         this.commands = new Collection();
         this.database = new Database();
         this.latestQuakeInfo = null;
+        this.voicevoxClient = new VOICEVOXClient(this);
     }
 
     public shutdown(): void {
+        this.logger.info('シャットダウンしています...');
+        this.voicevoxClient.shutdown();
         this.destroy();
+        this.database.shutdown();
         shutdown();
+
+        process.exit();
     }
 }
