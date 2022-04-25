@@ -443,7 +443,7 @@ export default class extends Command {
             const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === message.author.id;
             const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
             const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
-            client.database.addEEWChannel(message.channelId, intensity, []);
+            client.database.addEEWChannel(message.channelId, intensity, [], 0);
             await responseIntensity.update({
                 embeds: [
                     new MessageEmbed()
