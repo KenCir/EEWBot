@@ -14,8 +14,12 @@ export default async (client: EEWBot) => {
         const eewResponse = await axios.get(`${remoteURL}${getEEWTime(-1)}.json`);
         const eewData: EEWReportData = eewResponse.data as EEWReportData;
 
-        if (eewData.result.status !== 'success' || eewData.result.message === 'データがありません') return;
-        else if (eewData.report_num === oldEEWData?.report_num) return;
+        if (eewData.result.status !== 'success' || eewData.result.message === 'データがありません') {
+            oldEEWData = null;
+        }
+        else if (eewData.report_num === oldEEWData?.report_num) {
+            return;
+        }
 
         if (oldEEWData?.is_final) {
             oldEEWData = null;
@@ -47,7 +51,7 @@ export default async (client: EEWBot) => {
             }
         }
 
-        client.database.getAllEEWChannel_Intensity(intensityStringToNumber(eewData.calcintensity))
+        client.database.getAllEEWChannel(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3 ? 1 : 0)
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             .forEach(async eewChannelData => {
                 const eewChannel: TextChannel = client.channels.cache.get(eewChannelData.channelid) as TextChannel;

@@ -65,34 +65,12 @@ export default class Database {
     /**
      * 緊急地震速報を通知するチャンネルの全取得
      */
-    public getAllEEWChannel(): Array<EEWChannelData> {
-        const datas = this.sql.prepare('SELECT * FROM eew_channels;').all();
+    public getAllEEWChannel(intensity: number, magnitude: number): Array<EEWChannelData> {
+        const datas = this.sql.prepare('SELECT * FROM eew_channels WHERE min_intensity <= ? OR magnitude = ?;').all(intensity, magnitude);
         for (const data of datas) {
             data.mention_roles = JSON.parse(data.mention_roles);
         }
         return this.sql.prepare('SELECT * FROM eew_channels;').all() as Array<EEWChannelData>;
-    }
-
-    /**
-     * 緊急地震速報を通知するチャンネルを最小通知震度で絞り込んで取得
-     */
-    public getAllEEWChannel_Intensity(intensity: number): Array<EEWChannelData> {
-        const datas = this.sql.prepare('SELECT * FROM eew_channels WHERE min_intensity <= ?;').all(intensity);
-        for (const data of datas) {
-            data.mention_roles = JSON.parse(data.mention_roles);
-        }
-        return datas as Array<EEWChannelData>;
-    }
-
-    /**
-     * 緊急地震速報を通知するチャンネルをM3.5以上を通知するか絞り込んで取得
-     */
-    public getAllEEWChannel_Magnitude(): Array<EEWChannelData> {
-        const datas = this.sql.prepare('SELECT * FROM eew_channels WHERE magnitude = 1;').all();
-        for (const data of datas) {
-            data.mention_roles = JSON.parse(data.mention_roles);
-        }
-        return datas as Array<EEWChannelData>;
     }
 
     /**
@@ -129,25 +107,13 @@ export default class Database {
     /**
      * 地震情報を通知するチャンネルの全取得
      */
-    public getAllQuakeInfoChannel(): Array<QuakeInfoChannelData> {
-        const datas = this.sql.prepare('SELECT * FROM quakeinfo_channels;').all();
+    public getAllQuakeInfoChannel(intensity: number, magnitude: number): Array<QuakeInfoChannelData> {
+        const datas = this.sql.prepare('SELECT * FROM quakeinfo_channels WHERE min_intensity <= ? OR magnitude = ?;').all(intensity, magnitude);
         for (const data of datas) {
             data.mention_roles = JSON.parse(data.mention_roles);
         }
         return datas as Array<QuakeInfoChannelData>;
     }
-
-    /**
-     * 地震情報を通知するチャンネルを最小通知震度で絞り込んで取得
-     */
-    public getAllQuakeInfo_Intensity(intensity: number): Array<QuakeInfoChannelData> {
-        const datas = this.sql.prepare('SELECT * FROM quakeinfo_channels WHERE min_intensity <= ?;').all(intensity);
-        for (const data of datas) {
-            data.mention_roles = JSON.parse(data.mention_roles);
-        }
-        return datas as Array<QuakeInfoChannelData>;
-    }
-
     /**
      * 地震情報を通知するチャンネルを追加する
      */
