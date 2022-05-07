@@ -4,7 +4,7 @@ import notifyEEWReport from '../../functions/notifyEEWReport';
 import EEWMonitor from '../../functions/KyoushinMonitor';
 
 export default (client: EEWBot) => {
-    client.user?.setActivity(`${process.env.PREFIX as string}help`);
+    client.user?.setActivity('/help');
     client.logger.info(`Logged in as ${client.user?.tag as string}`);
 
     void client.voicevoxClient.notify('テスト');

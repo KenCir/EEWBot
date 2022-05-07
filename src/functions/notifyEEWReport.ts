@@ -16,6 +16,7 @@ export default async (client: EEWBot) => {
 
         if (eewData.result.status !== 'success' || eewData.result.message === 'データがありません') {
             oldEEWData = null;
+            return;
         }
         else if (eewData.report_num === oldEEWData?.report_num) {
             return;
