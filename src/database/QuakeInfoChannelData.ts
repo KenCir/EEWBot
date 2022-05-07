@@ -10,9 +10,9 @@ export interface QuakeInfoChannelData {
     min_intensity: number;
 
     /**
-     * 通知する最小マグニチュード
+     * M3.5以上の地震を通知するか
      */
-    min_magnitude: number;
+    magnitude: number;
 
     /**
      * 通知時にメンションするロールID配列

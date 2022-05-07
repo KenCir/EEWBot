@@ -19,10 +19,4 @@ export default class extends Command {
         const msg: Message = await interaction.followUp('Pong!') as Message;
         await interaction.editReply(`APIPing: ${msg.createdTimestamp - interaction.createdTimestamp}ms\nWebSocketPing: ${client.ws.ping}ms\nメモリ使用率: ${Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100}MB`);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async run_message(client: EEWBot, message: Message, args: string[]): Promise<void> {
-        const msg = await message.reply('Pong!');
-        await msg.edit(`APIPing: ${msg.createdTimestamp - message.createdTimestamp}ms\nWebSocketPing: ${client.ws.ping}ms\nメモリ使用率: ${Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100}MB`);
-    }
 }

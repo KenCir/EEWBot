@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { DiscordGatewayAdapterCreator } from '@discordjs/voice';
-import { Message } from 'discord.js';
+import { CommandInteraction, CacheType, GuildMember, Guild } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -17,17 +17,17 @@ export default class extends Command {
         );
     }
 
-    public async run_message(client: EEWBot, message: Message<boolean>, args: string[]): Promise<void> {
-        if (client.voicevoxClient.get(message.guildId as string)) {
-            await message.reply('既にVC参加済みです');
+    public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
+        if (client.voicevoxClient.get(interaction.guildId as string)) {
+            await interaction.followUp('既にVC参加済みです');
             return;
         }
-        else if (!message.member?.voice.channelId) {
-            await message.reply('VCに参加してからこのコマンドを使用してください');
+        else if (!(interaction.member as GuildMember).voice.channelId) {
+            await interaction.followUp('VCに参加してからこのコマンドを使用してください');
             return;
         }
 
-        client.voicevoxClient.add(message.guildId as string, message.member.voice.channelId, message.guild?.voiceAdapterCreator as DiscordGatewayAdapterCreator);
-        await message.reply('VCに参加しました');
+        client.voicevoxClient.add(interaction.guildId as string, (interaction.member as GuildMember).voice.channelId as string, (interaction.guild as Guild).voiceAdapterCreator as DiscordGatewayAdapterCreator);
+        await interaction.followUp('VCに参加しました');
     }
 }

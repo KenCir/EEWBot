@@ -26,12 +26,9 @@ export default class Database {
         // 地震情報を通知するチャンネル
         const quakeInfoChannelTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'quakeinfo_channels\';').get();
         if (!quakeInfoChannelTable['count(*)']) {
-            this.sql.prepare('CREATE TABLE quakeinfo_channels (channelid TEXT PRIMARY KEY, min_intensity INTEGER, mention_roles TEXT, image INTEGER, relative INTEGER);').run();
+            this.sql.prepare('CREATE TABLE quakeinfo_channels (channelid TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER, mention_roles TEXT, image INTEGER, relative INTEGER);').run();
             this.sql.prepare('CREATE UNIQUE INDEX idx_quakeinfo_channels_id ON quakeinfo_channels (channelid);').run();
         }
-
-        this.sql.pragma('synchronous = 1');
-        this.sql.pragma('journal_mode = wal');
     }
 
     public shutdown(): void {
@@ -106,6 +103,11 @@ export default class Database {
         this.sql.prepare('INSERT INTO eew_channels VALUES (?, ?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles), magnitude);
     }
 
+    public editEEWChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>, magnitude: number): void {
+        if (!this.getEEWChannel(channelId)) return;
+        this.sql.prepare('UPDATE eew_channels SET min_intensity = ?, mention_roles = ?, magnitude = ? WHERE channelid = ?;').run(minIntensity, JSON.stringify(mentionRoles), magnitude, channelId);
+    }
+
     /**
      * 緊急地震速報を通知するチャンネルを削除する
      */
@@ -149,9 +151,14 @@ export default class Database {
     /**
      * 地震情報を通知するチャンネルを追加する
      */
-    public addQuakeInfoChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>, image: number, relative: number): void {
+    public addQuakeInfoChannel(channelId: string, minIntensity: number, magnitude: number, mentionRoles: Array<string>, image: number, relative: number): void {
         if (this.getQuakeInfoChannel(channelId)) return;
-        this.sql.prepare('INSERT INTO quakeinfo_channels VALUES (?, ?, ?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles), image, relative);
+        this.sql.prepare('INSERT INTO quakeinfo_channels VALUES (?, ?, ?, ?, ?, ?);').run(channelId, minIntensity, magnitude, JSON.stringify(mentionRoles), image, relative);
+    }
+
+    public editQuakeInfoChannel(channelId: string, minIntensity: number, magnitude: number, mentionRoles: Array<string>, image: number, relative: number): void {
+        if (!this.getQuakeInfoChannel(channelId)) return;
+        this.sql.prepare('UPDATE quakeinfo_channels SET min_intensity = ?, mention_roles = ?, magnitude = ?, image = ?, relative = ? WHERE channelid = ?;').run(minIntensity, magnitude, JSON.stringify(mentionRoles), image, relative, channelId);
     }
 
     /**

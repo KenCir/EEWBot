@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, Message } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import EEWBot from '../EEWBot';
 
 export abstract class Command {
@@ -41,9 +41,5 @@ export abstract class Command {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, no-empty-function
     async run(client: EEWBot, interaction: CommandInteraction): Promise<void> {
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function, no-empty-function
-    async run_message(client: EEWBot, message: Message, args: Array<string>): Promise<void> {
     }
 }

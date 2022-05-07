@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-misused-promises */
 import { readdirSync } from 'fs';
 import { join } from 'path';
-import express from 'express';
+import express, { Express, urlencoded, json, Request, Response } from 'express';
 import { config } from 'dotenv';
 import logger from 'morgan';
 import EEWBot from './EEWBot';
@@ -9,20 +9,20 @@ import { Command } from './interfaces/Command';
 import { QuakeInfoData } from './interfaces/QuakeInfoData';
 import notifyQuakeInfo from './functions/notifyQuakeInfo';
 config();
-const app: express.Express = express();
+const app: Express = express();
 const client = new EEWBot();
 
-app.use(express.urlencoded({
+app.use(urlencoded({
     extended: true,
 }));
-app.use(express.json());
+app.use(json());
 app.use(logger('dev'));
 
-app.get('/', (req: express.Request, res: express.Response) => {
+app.get('/', (req: Request, res: Response) => {
     res.status(200).send('Hello World').end();
 });
 
-app.post('/quakeinfo', (req: express.Request, res: express.Response) => {
+app.post('/quakeinfo', (req: Request, res: Response) => {
     const quakeInfoData: QuakeInfoData = req.body as QuakeInfoData;
     client.latestQuakeInfo = quakeInfoData;
     notifyQuakeInfo(client, quakeInfoData);

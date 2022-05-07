@@ -10,11 +10,6 @@ export interface EEWChannelData {
     min_intensity: number;
 
     /**
-     * 通知する最小マグニチュード
-     */
-    min_magnitude: number;
-
-    /**
      * 通知時にメンションするロールID配列
      */
     mention_roles: Array<string>;

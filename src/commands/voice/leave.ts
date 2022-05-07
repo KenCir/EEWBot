@@ -1,6 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { DiscordGatewayAdapterCreator } from '@discordjs/voice';
-import { Message } from 'discord.js';
+import { CommandInteraction, CacheType } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -17,13 +16,13 @@ export default class extends Command {
         );
     }
 
-    public async run_message(client: EEWBot, message: Message<boolean>, args: string[]): Promise<void> {
-        if (!client.voicevoxClient.get(message.guildId as string)) {
-            await message.reply('VCに参加してません');
+    public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
+        if (!client.voicevoxClient.get(interaction.guildId as string)) {
+            await interaction.followUp('VCに参加してません');
             return;
         }
 
-        client.voicevoxClient.leave(message.guildId as string);
-        await message.reply('VCから退出しました');
+        client.voicevoxClient.leave(interaction.guildId as string);
+        await interaction.followUp('VCから退出しました');
     }
 }

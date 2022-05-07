@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 import { config } from 'dotenv';
 import { REST } from '@discordjs/rest';
@@ -28,7 +27,7 @@ void (async () => {
         console.log('Started refreshing application (/) commands.');
 
         await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENTID as string, '872880984205430834'),
+            Routes.applicationGuildCommands(process.env.CLIENTID as string, process.env.GUILDID as string),
             { body: commands },
         );
 
