@@ -9,7 +9,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
 
     void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`);
 
-    client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3 ? 1 : 0)
+    client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0)
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         .forEach(async quakeInfoChannelData => {
             const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channelid) as TextChannel;

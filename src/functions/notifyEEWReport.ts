@@ -52,7 +52,7 @@ export default async (client: EEWBot) => {
             }
         }
 
-        client.database.getAllEEWChannel(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3 ? 1 : 0)
+        client.database.getAllEEWChannel(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3.5 ? 1 : 0)
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             .forEach(async eewChannelData => {
                 const eewChannel: TextChannel = client.channels.cache.get(eewChannelData.channelid) as TextChannel;
