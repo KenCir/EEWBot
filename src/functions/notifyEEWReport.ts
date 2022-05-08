@@ -27,10 +27,12 @@ export default async (client: EEWBot) => {
         }
 
         if (!oldEEWData) {
-            void client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`);
+            client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`)
+                .catch(e => client.logger.error(e));
         }
         else if (eewData.is_final) {
-            void client.voicevoxClient.notify(`緊急地震速報の最終報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`);
+            client.voicevoxClient.notify(`緊急地震速報の最終報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`)
+                .catch(e => client.logger.error(e));
         }
 
         let diff = '';

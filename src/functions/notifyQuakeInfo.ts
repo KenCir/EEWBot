@@ -7,7 +7,8 @@ import { intensityStringToNumber } from '../utils/IntensityUtil';
 export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
     if (client.database.getReportedData(quakeInfo.id)) return;
 
-    void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`);
+    void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`)
+        .catch(e => client.logger.error(e));
 
     client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0)
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
