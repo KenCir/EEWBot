@@ -123,7 +123,11 @@ export default class extends Command {
                 const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
                 const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
                 client.database.editEEWChannel(eewNotifyData.channelid, intensity, eewNotifyData.mention_roles, eewNotifyData.magnitude);
-                await responseIntensity.followUp(`最小通知震度を${intensityNumberToString(intensity)}に変更しました`);
+                await responseIntensity.update({
+                    content: `最小通知震度を${intensityNumberToString(intensity)}に変更しました`,
+                    embeds: [],
+                    components: [],
+                });
             }
             else if (responseEdit.values.shift() === 'M3.5以上') {
                 await responseEdit.update({
@@ -156,7 +160,11 @@ export default class extends Command {
                 }
                 else if (responseMagnitude.customId === 'no') {
                     client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, 0);
-                    await responseMagnitude.followUp('M3.5以上の緊急地震速報を通知しないに変更しました');
+                    await responseMagnitude.update({
+                        content: 'M3.5以上の緊急地震速報を通知しないに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
             }
         }
@@ -264,7 +272,11 @@ export default class extends Command {
                 const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
                 const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
                 client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-                await responseIntensity.followUp(`最小通知震度を${intensityNumberToString(intensity)}に変更しました`);
+                await responseIntensity.followUp({
+                    content: `最小通知震度を${intensityNumberToString(intensity)}に変更しました`,
+                    embeds: [],
+                    components: [],
+                });
             }
             else if (responseEdit.values.shift() === 'M3.5以上') {
                 await responseEdit.update({
@@ -296,7 +308,11 @@ export default class extends Command {
                 }
                 else if (responseMagnitude.customId === 'no') {
                     client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, 0, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-                    await responseMagnitude.followUp('M3.5以上の地震を通知しないに変更しました');
+                    await responseMagnitude.followUp({
+                        content: 'M3.5以上の地震を通知しないに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
             }
             else if (responseEdit.values.shift() === '通知時に震度マップを送信') {
@@ -325,11 +341,19 @@ export default class extends Command {
                 const responseImage = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
                 if (responseImage.customId === 'ok') {
                     client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 1, quakeInfoNotifyData.relative);
-                    await responseImage.followUp('通知時に震度マップを送信するに変更しました');
+                    await responseImage.editReply({
+                        content: '通知時に震度マップを送信するに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
                 else if (responseImage.customId === 'no') {
                     client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 0, quakeInfoNotifyData.relative);
-                    await responseImage.followUp('通知時に震度マップを送信しないに変更しました');
+                    await responseImage.followUp({
+                        content: '通知時に震度マップを送信しないに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
             }
             else if (responseEdit.values.shift() === '通知時に各地の震度情報を送信') {
@@ -358,11 +382,19 @@ export default class extends Command {
                 const responseRelative = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
                 if (responseRelative.customId === 'ok') {
                     client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 1);
-                    await responseRelative.followUp('通知時に各地の震度情報を送信するに変更しました');
+                    await responseRelative.followUp({
+                        content: '通知時に各地の震度情報を送信するに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
                 else if (responseRelative.customId === 'no') {
                     client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 0);
-                    await responseRelative.followUp('通知時に各地の震度情報を送信しないに変更しました');
+                    await responseRelative.followUp({
+                        content: '通知時に各地の震度情報を送信しないに変更しました',
+                        embeds: [],
+                        components: [],
+                    });
                 }
             }
         }
