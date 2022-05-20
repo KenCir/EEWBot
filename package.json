@@ -18,6 +18,9 @@
   "keywords": [],
   "author": "Ken_Cir",
   "license": "MIT",
+  "engines": {
+    "node": "16.13.0"
+  },
   "devDependencies": {
     "@discordjs/rest": "^0.4.1",
     "@types/better-sqlite3": "^7.5.0",
