@@ -7,8 +7,6 @@ export default class extends Command {
   constructor() {
     super('help',
       '全コマンドを表示する',
-      '(コマンド名)',
-      [],
       'main',
       (new SlashCommandBuilder()
         .setName('help')
@@ -111,7 +109,7 @@ export default class extends Command {
       });
     }
     else {
-      const command = client.commands.get(commandName) || client.commands.find(c => c.aliases.includes(commandName));
+      const command = client.commands.get(commandName);
       if (!command) {
         await interaction.followUp(`コマンド名: ${commandName}は存在しません`);
         return;
@@ -120,7 +118,7 @@ export default class extends Command {
         embeds: [
           new MessageEmbed()
             .setTitle(`コマンド名: ${command.name}の詳細`)
-            .setDescription(`コマンド名: ${command.name}\n説明: ${command.description}\n使用法: ${codeBlock(`/${command.name}`)}\nエイリアス: ${codeBlock(command.aliases.join('\n'))}\nコマンドカテゴリ: ${command.category}`)
+            .setDescription(`コマンド名: ${command.name}\n説明: ${command.description}\n使用法: ${codeBlock(`/${command.name}`)}\nコマンドカテゴリ: ${command.category}`)
             .setColor('RANDOM'),
         ],
       });
