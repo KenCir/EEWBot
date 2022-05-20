@@ -5,6 +5,7 @@ import { EEWReportData } from '../interfaces/EEWReportData';
 import axios from 'axios';
 import { getEEWTime } from '../utils/Time';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
+import config from '../../config.json';
 
 let oldEEWData: EEWReportData | null = null;
 
@@ -69,7 +70,8 @@ export default async (client: EEWBot) => {
         // キャンセル報
         if (eewData.is_cancel === true) {
           await eewChannel.send('緊急地震速報はキャンセルされました');
-          await client.twitter.post('statuses/update', { status: '緊急地震速報はキャンセルされました' });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (config.twitter) await client.twitter.post('statuses/update', { status: '緊急地震速報はキャンセルされました' });
           return;
         }
 
@@ -89,6 +91,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('AQUA')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -109,6 +112,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('AQUA')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -133,6 +137,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('YELLOW')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -153,6 +158,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('YELLOW')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -178,6 +184,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('RED')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -198,6 +205,7 @@ export default async (client: EEWBot) => {
                   .addField('経度', eewData.longitude, true)
                   .setColor('RED')
                   .setImage('attachment://nowMonitor.png')
+                  .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
@@ -209,15 +217,18 @@ export default async (client: EEWBot) => {
       });
 
     // twitterに投稿する処理
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (config.twitter) {
+      // キャンセル報
+      if (eewData.is_cancel === true) {
+        await client.twitter.post('statuses/update', { status: '緊急地震速報はキャンセルされました' });
+      }
+      // 予想最大震度3未満
+      else {
+        await client.twitter.post('statuses/update', { status: `緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報\n震央: ${eewData.region_name}\n深さ: ${eewData.depth}\nマグニチュード: ${eewData.magunitude}\n予想震度: ${eewData.calcintensity}\n緯度${eewData.latitude}\n経度${eewData.longitude}\n\n強震モニタより` });
+      }
+    }
 
-    // キャンセル報
-    if (eewData.is_cancel === true) {
-      await client.twitter.post('statuses/update', { status: '緊急地震速報はキャンセルされました' });
-    }
-    // 予想最大震度3未満
-    else {
-      await client.twitter.post('statuses/update', { status: `緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報\n震央: ${eewData.region_name}\n深さ: ${eewData.depth}\nマグニチュード: ${eewData.magunitude}\n予想震度: ${eewData.calcintensity}\n${eewData.latitude}\n${eewData.longitude}` });
-    }
 
     oldEEWData = eewData;
   }

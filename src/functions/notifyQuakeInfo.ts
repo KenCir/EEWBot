@@ -2,8 +2,8 @@ import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
+import config from '../../config.json';
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export default async (client: EEWBot, quakeInfo: QuakeInfoData) => {
   if (client.database.getReportedData(quakeInfo.id)) return;
 
@@ -30,6 +30,7 @@ export default async (client: EEWBot, quakeInfo: QuakeInfoData) => {
             .addField('マグニチュード', quakeInfo.magnitude)
             .addField('北緯', quakeInfo.latitudey)
             .addField('東経', quakeInfo.longitude)
+            .setFooter({ text: 'NHK地震情報' })
             .setTimestamp(),
         ],
       });
@@ -57,7 +58,10 @@ export default async (client: EEWBot, quakeInfo: QuakeInfoData) => {
       }
     });
 
-  await client.twitter.post('statuses/update', { status: `${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました\n最大震度: ${quakeInfo.intensity}\n発生時刻: ${quakeInfo.time}頃\n震源の深さ: ${quakeInfo.depth}\nマグニチュード: ${quakeInfo.magnitude}\n${quakeInfo.latitudey}\n${quakeInfo.longitude}` });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (config.twitter) {
+    await client.twitter.post('statuses/update', { status: `${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました\n最大震度: ${quakeInfo.intensity}\n発生時刻: ${quakeInfo.time}頃\n震源の深さ: ${quakeInfo.depth}\nマグニチュード: ${quakeInfo.magnitude}\n${quakeInfo.latitudey}\n${quakeInfo.longitude}\n\nNHK地震情報より` });
+  }
 
   client.database.addReportedData(quakeInfo.id);
 };
