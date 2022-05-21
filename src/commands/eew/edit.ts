@@ -49,11 +49,11 @@ export default class extends Command {
                 .setOptions([
                   {
                     label: '最小震度',
-                    value: '最小震度',
+                    value: 'intensity',
                   },
                   {
                     label: 'M3.5以上',
-                    value: 'M3.5以上',
+                    value: 'magnitude',
                   },
                 ]),
             ),
@@ -61,7 +61,7 @@ export default class extends Command {
       }) as Message;
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
       const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
-      if (responseEdit.values.shift() === '最小震度') {
+      if (responseEdit.values[0] === 'intensity') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
@@ -126,7 +126,7 @@ export default class extends Command {
           components: [],
         });
       }
-      else if (responseEdit.values.shift() === 'M3.5以上') {
+      else if (responseEdit.values[0] === 'magnitude') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
@@ -210,7 +210,7 @@ export default class extends Command {
       }) as Message;
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
       const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
-      if (responseEdit.values.shift() === '最小震度') {
+      if (responseEdit.values[0] === '最小震度') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
@@ -274,7 +274,7 @@ export default class extends Command {
           components: [],
         });
       }
-      else if (responseEdit.values.shift() === 'M3.5以上') {
+      else if (responseEdit.values[0] === 'M3.5以上') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
@@ -311,7 +311,7 @@ export default class extends Command {
           });
         }
       }
-      else if (responseEdit.values.shift() === '通知時に震度マップを送信') {
+      else if (responseEdit.values[0] === '通知時に震度マップを送信') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
@@ -352,7 +352,7 @@ export default class extends Command {
           });
         }
       }
-      else if (responseEdit.values.shift() === '通知時に各地の震度情報を送信') {
+      else if (responseEdit.values[0] === '通知時に各地の震度情報を送信') {
         await responseEdit.update({
           embeds: [
             new MessageEmbed()
