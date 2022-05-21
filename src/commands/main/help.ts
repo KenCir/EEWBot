@@ -27,7 +27,7 @@ export default class extends Command {
       embeds.push(
         new MessageEmbed()
           .setTitle(`${client.user?.tag as string} HELP`)
-          .setDescription('このBotは緊急地震速報・地震情報をDiscordにテキスト&ボイスでお知らせするBotです。\n全ての情報の正確性は保証されません、自己責任でご利用ください。\n\n開発者: Ken_Cir#0514')
+          .setDescription('このBotは緊急地震速報・地震情報をDiscordにテキスト&ボイスでお知らせするBotです。\n全ての情報の正確性は保証されません、自己責任でご利用ください。\n\n開発者: Ken_Cir#0514\n\n音声合成クレジット\nVOICEVOX:春日部つむぎ')
           .addField('メインコマンド', client.commands.filter(x => x.category == 'main').map((x) => '`' + x.name + '`').join(', '))
           .addField('EEWコマンド', client.commands.filter(x => x.category == 'eew').map((x) => '`' + x.name + '`').join(', '))
           .setColor('RANDOM'),
