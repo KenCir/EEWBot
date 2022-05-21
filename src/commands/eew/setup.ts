@@ -162,7 +162,6 @@ export default class extends Command {
             .setDescription('緊急地震速報通知セットアップが完了しました')
             .addField('通知最小震度', intensityNumberToString(intensity))
             .addField('M3.5以上', magnitude === 0 ? '通知しない' : '通知する')
-            .addField('~~通知時にメンションするロール~~', 'なし')
             .setColor('RANDOM'),
         ],
         components: [],
@@ -358,7 +357,6 @@ export default class extends Command {
             .setDescription('地震通知セットアップが完了しました')
             .addField('通知最小震度', intensityNumberToString(intensity))
             .addField('M3.5以上', magnitude === 0 ? '通知しない' : '通知する')
-            .addField('通知時にメンションするロール', 'なし')
             .addField('通知時に震度マップを送信', image === 0 ? 'しない' : 'する')
             .addField('通知時に各地の震度情報を送信', relative === 0 ? 'しない' : 'する'),
         ],

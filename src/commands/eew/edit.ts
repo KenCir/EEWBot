@@ -39,8 +39,7 @@ export default class extends Command {
             .setTitle('設定を編集する項目を選択してください')
             .addField('設定項目名', '現在の設定')
             .addField('最小地震', intensityNumberToString(eewNotifyData.min_intensity))
-            .addField('M3.5以上', eewNotifyData.magnitude === 0 ? '通知しない' : '通知する')
-            .addField('~~通知時にメンションするロール~~', 'なし'),
+            .addField('M3.5以上', eewNotifyData.magnitude === 0 ? '通知しない' : '通知する'),
         ],
         components: [
           new MessageActionRow()
@@ -180,7 +179,6 @@ export default class extends Command {
             .addField('設定項目名', '現在の設定')
             .addField('最小地震', intensityNumberToString(quakeInfoNotifyData.min_intensity))
             .addField('M3.5以上', quakeInfoNotifyData.magnitude === 0 ? '通知しない' : '通知する')
-            .addField('~~通知時にメンションするロール~~', 'なし')
             .addField('通知時に震度マップを送信', quakeInfoNotifyData.image === 0 ? 'しない' : 'する')
             .addField('通知時に各地の震度情報を送信', quakeInfoNotifyData.relative === 0 ? 'しない' : 'する'),
         ],
