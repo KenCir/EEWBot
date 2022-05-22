@@ -169,5 +169,4 @@ eew.db
 eew.db-shm
 eew.db-wal
 dat/voices
-config.json
 
