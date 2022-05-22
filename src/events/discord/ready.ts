@@ -12,9 +12,9 @@ export default (client: EEWBot) => {
   setInterval(() => {
     void EEWMonitor(client);
     void notifyEEWReport(client);
-  }, 1000);
+  }, 5000);
 
   setInterval(() => {
     spawn('php', ['QuakeInfo.php']);
-  }, 1000);
+  }, 5000);
 };
