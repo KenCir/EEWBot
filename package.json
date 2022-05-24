@@ -28,7 +28,7 @@
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.36",
     "@types/twitter": "^1.7.1",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.25.0",
     "discord-api-types": "^0.33.0",
     "eslint": "^8.15.0",
