@@ -51,6 +51,6 @@
     "ts-node": "^10.7.0",
     "tweetnacl": "^1.0.3",
     "twitter": "^1.7.1",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.2"
   }
 }
