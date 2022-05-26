@@ -268,7 +268,7 @@ export default class extends Command {
         const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
         client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-        await responseIntensity.followUp({
+        await responseIntensity.update({
           content: `最小通知震度を${intensityNumberToString(intensity)}に変更しました`,
           embeds: [],
           components: [],
@@ -300,11 +300,11 @@ export default class extends Command {
         const responseMagnitude = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseMagnitude.customId === 'ok') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, 1, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-          await responseMagnitude.followUp('M3.5以上の地震を通知するに変更しました');
+          await responseMagnitude.update('M3.5以上の地震を通知するに変更しました');
         }
         else if (responseMagnitude.customId === 'no') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, 0, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-          await responseMagnitude.followUp({
+          await responseMagnitude.update({
             content: 'M3.5以上の地震を通知しないに変更しました',
             embeds: [],
             components: [],
@@ -337,7 +337,7 @@ export default class extends Command {
         const responseImage = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseImage.customId === 'ok') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 1, quakeInfoNotifyData.relative);
-          await responseImage.editReply({
+          await responseImage.update({
             content: '通知時に震度マップを送信するに変更しました',
             embeds: [],
             components: [],
@@ -345,7 +345,7 @@ export default class extends Command {
         }
         else if (responseImage.customId === 'no') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 0, quakeInfoNotifyData.relative);
-          await responseImage.followUp({
+          await responseImage.update({
             content: '通知時に震度マップを送信しないに変更しました',
             embeds: [],
             components: [],
@@ -378,7 +378,7 @@ export default class extends Command {
         const responseRelative = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseRelative.customId === 'ok') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 1);
-          await responseRelative.followUp({
+          await responseRelative.update({
             content: '通知時に各地の震度情報を送信するに変更しました',
             embeds: [],
             components: [],
@@ -386,7 +386,7 @@ export default class extends Command {
         }
         else if (responseRelative.customId === 'no') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 0);
-          await responseRelative.followUp({
+          await responseRelative.update({
             content: '通知時に各地の震度情報を送信しないに変更しました',
             embeds: [],
             components: [],
