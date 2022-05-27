@@ -2,9 +2,8 @@ import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
-import config from '../../config.json';
 
-export default async (client: EEWBot, quakeInfo: QuakeInfoData) => {
+export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
   if (client.database.getReportedData(quakeInfo.id)) return;
 
   void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`)
@@ -57,11 +56,6 @@ export default async (client: EEWBot, quakeInfo: QuakeInfoData) => {
         }
       }
     });
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (config.twitter) {
-    await client.twitter.post('statuses/update', { status: `${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました\n最大震度: ${quakeInfo.intensity}\n発生時刻: ${quakeInfo.time}頃\n震源の深さ: ${quakeInfo.depth}\nマグニチュード: ${quakeInfo.magnitude}\n${quakeInfo.latitudey}\n${quakeInfo.longitude}\n\nNHK地震情報より` });
-  }
 
   client.database.addReportedData(quakeInfo.id);
 };
