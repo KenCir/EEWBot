@@ -1,7 +1,6 @@
-
 name: Cl
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   Cl:
