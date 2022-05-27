@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageEmbed, MessageSelectMenu } from 'discord.js';
+import { CommandInteraction, CacheType, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, GuildMember } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityNumberToString, intensityStringToNumber } from '../../utils/IntensityUtil';
@@ -26,6 +26,11 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
+    if (!(interaction.member as GuildMember).permissions.has('ADMINISTRATOR') && !(interaction.member as GuildMember).permissions.has('MANAGE_CHANNELS')) {
+      await interaction.followUp('このコマンドは管理者権限かチャンネルを管理権限を持っている人のみ使用可能です');
+      return;
+    }
+
     if (interaction.options.getSubcommand() === 'eew') {
       const eewNotifyData = client.database.getEEWChannel(interaction.channelId);
       if (!eewNotifyData) {
