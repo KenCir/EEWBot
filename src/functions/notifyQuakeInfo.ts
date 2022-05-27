@@ -1,3 +1,4 @@
+import { roleMention } from '@discordjs/builders';
 import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
@@ -23,6 +24,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         }
 
         await quakeInfoChannel.send({
+          content: quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
           embeds: [
             new MessageEmbed()
               .setTitle('地震情報')
@@ -83,6 +85,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       }
 
       await quakeInfoChannel.send({
+        content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
         embeds: [
           new MessageEmbed()
             .setTitle('地震情報')

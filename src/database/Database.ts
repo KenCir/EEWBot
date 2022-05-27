@@ -127,7 +127,7 @@ export default class Database {
 
   public editQuakeInfoChannel(channelId: string, minIntensity: number, magnitude: number, mentionRoles: Array<string>, image: number, relative: number): void {
     if (!this.getQuakeInfoChannel(channelId)) return;
-    this.sql.prepare('UPDATE quakeinfo_channels SET min_intensity = ?, mention_roles = ?, magnitude = ?, image = ?, relative = ? WHERE channelid = ?;').run(minIntensity, magnitude, JSON.stringify(mentionRoles), image, relative, channelId);
+    this.sql.prepare('UPDATE quakeinfo_channels SET min_intensity = ?, mention_roles = ?, magnitude = ?, image = ?, relative = ? WHERE channelid = ?;').run(minIntensity, JSON.stringify(mentionRoles), magnitude, image, relative, channelId);
   }
 
   /**
