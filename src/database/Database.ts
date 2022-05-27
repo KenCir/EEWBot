@@ -3,6 +3,7 @@ import SQLite3 from 'better-sqlite3';
 import { EEWChannelData } from './EEWChannelData';
 import { QuakeInfoChannelData } from './QuakeInfoChannelData';
 import { ReportedData } from './ReportedData';
+import { VoiceSetting } from './VoiceSetting';
 
 export default class Database {
   public readonly sql: SQLite3.Database;
@@ -28,6 +29,13 @@ export default class Database {
     if (!quakeInfoChannelTable['count(*)']) {
       this.sql.prepare('CREATE TABLE quakeinfo_channels (channelid TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER, mention_roles TEXT, image INTEGER, relative INTEGER);').run();
       this.sql.prepare('CREATE UNIQUE INDEX idx_quakeinfo_channels_id ON quakeinfo_channels (channelid);').run();
+    }
+
+    // VC settings
+    const voiceSettingTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'voice_settings\';').get();
+    if (!voiceSettingTable['count(*)']) {
+      this.sql.prepare('CREATE TABLE voice_settings (guild_id TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER);').run();
+      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_settings_id ON voice_settings (guild_id);').run();
     }
 
     this.sql.pragma('synchronous = 1');
@@ -136,5 +144,19 @@ export default class Database {
   public removeQuakeInfoChannel(channelId: string): void {
     if (!this.getQuakeInfoChannel(channelId)) return;
     this.sql.prepare('DELETE FROM quakeinfo_channels WHERE channelid = ?;').run(channelId);
+  }
+
+  public getVoiceSetting(guildId: string): VoiceSetting | undefined {
+    return this.sql.prepare('SELECT * FROM voice_settings WHERE guild_id = ?;').get(guildId);
+  }
+
+  public addVoiceSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (this.getVoiceSetting(guildId)) return;
+    this.sql.prepare('INSERT INTO voice_settings VALUES (?, ?, ?);').run(guildId, minIntensity, magnitude);
+  }
+
+  public updateVoiceSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (!this.getVoiceSetting(guildId)) return;
+    this.sql.prepare('UPDATE voice_settings SET min_intensity = ?, magnitude = ? WHERE guild_id = ?;').run(minIntensity, magnitude, guildId);
   }
 }
