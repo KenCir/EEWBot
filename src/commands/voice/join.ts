@@ -16,6 +16,11 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
+    if (!(interaction.member as GuildMember).permissions.has('ADMINISTRATOR') && !(interaction.member as GuildMember).permissions.has('MOVE_MEMBERS')) {
+      await interaction.followUp('このコマンドは管理者権限かメンバーを移動権限を持っている人のみ使用可能です');
+      return;
+    }
+
     if (client.voicevoxClient.get(interaction.guildId as string)) {
       await interaction.followUp('既にVC参加済みです');
       return;
