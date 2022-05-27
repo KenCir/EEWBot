@@ -30,6 +30,7 @@ export default class extends Command {
           .setDescription('このBotは緊急地震速報・地震情報をDiscordにテキスト&ボイスでお知らせするBotです。\n全ての情報の正確性は保証されません、自己責任でご利用ください。\n\n開発者: Ken_Cir#0514\n\n音声合成クレジット\nVOICEVOX:四国めたん')
           .addField('メインコマンド', client.commands.filter(x => x.category == 'main').map((x) => '`' + x.name + '`').join(', '))
           .addField('EEWコマンド', client.commands.filter(x => x.category == 'eew').map((x) => '`' + x.name + '`').join(', '))
+          .addField('VC読み上げコマンド', client.commands.filter(x => x.category == 'voice').map((x) => '`' + x.name + '`').join(', '))
           .setColor('RANDOM'),
         new MessageEmbed()
           .setTitle('メインコマンド')
@@ -38,6 +39,10 @@ export default class extends Command {
         new MessageEmbed()
           .setTitle('EEWコマンド')
           .setDescription(codeBlock(client.commands.filter(x => x.category == 'eew').map((x) => `/${x.name}: ${x.description}`).join('\n')))
+          .setColor('RANDOM'),
+        new MessageEmbed()
+          .setTitle('VC読み上げコマンド')
+          .setDescription(codeBlock(client.commands.filter(x => x.category == 'voice').map((x) => `/${x.name}: ${x.description}`).join('\n')))
           .setColor('RANDOM'),
       );
 
