@@ -21,37 +21,73 @@ export default class extends Command {
       return;
     }
 
-    await interaction.followUp({
-      embeds: [
-        new MessageEmbed()
-          .setTitle('最新の地震情報')
-          .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
-          .addField('最大震度', quakeInfo.intensity)
-          .addField('発生時刻', `${quakeInfo.time}頃`)
-          .addField('震源の深さ', quakeInfo.depth)
-          .addField('マグニチュード', quakeInfo.magnitude)
-          .addField('北緯', quakeInfo.latitudey.replace('北緯', ''))
-          .addField('東経', quakeInfo.longitude.replace('東経', ''))
-          .setTimestamp(),
-      ],
-    });
-
-    await interaction.followUp({
-      files: [
-        new MessageAttachment(quakeInfo.detail),
-        new MessageAttachment(quakeInfo.local),
-        new MessageAttachment(quakeInfo.global),
-      ],
-    });
-
-    for (const relative of quakeInfo.relatives) {
+    if (quakeInfo.epicenter === '') {
       await interaction.followUp({
         embeds: [
           new MessageEmbed()
-            .setTitle(`震度${relative.intensity}を観測した場所`)
-            .setDescription(relative.points.join('\n')),
+            .setTitle('地震情報')
+            .setDescription(`${quakeInfo.time}頃、最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
+            .addField('震源', '調査中')
+            .addField('最大震度', quakeInfo.intensity)
+            .addField('発生時刻', `${quakeInfo.time}頃`)
+            .addField('震源の深さ', '調査中')
+            .addField('マグニチュード', '調査中')
+            .addField('北緯', '調査中')
+            .addField('東経', '調査中')
+            .setFooter({ text: 'NHK地震情報' })
+            .setTimestamp(),
         ],
       });
+
+      await interaction.followUp({
+        files: [
+          new MessageAttachment(quakeInfo.detail),
+        ],
+      });
+
+      for (const relative of quakeInfo.relatives) {
+        await interaction.followUp({
+          embeds: [
+            new MessageEmbed()
+              .setTitle(`震度${relative.intensity}を観測した場所`)
+              .setDescription(relative.points.join('\n')),
+          ],
+        });
+      }
+    }
+    else {
+      await interaction.followUp({
+        embeds: [
+          new MessageEmbed()
+            .setTitle('最新の地震情報')
+            .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
+            .addField('最大震度', quakeInfo.intensity)
+            .addField('発生時刻', `${quakeInfo.time}頃`)
+            .addField('震源の深さ', quakeInfo.depth)
+            .addField('マグニチュード', quakeInfo.magnitude)
+            .addField('北緯', quakeInfo.latitudey.replace('北緯', ''))
+            .addField('東経', quakeInfo.longitude.replace('東経', ''))
+            .setTimestamp(),
+        ],
+      });
+
+      await interaction.followUp({
+        files: [
+          new MessageAttachment(quakeInfo.detail),
+          new MessageAttachment(quakeInfo.local),
+          new MessageAttachment(quakeInfo.global),
+        ],
+      });
+
+      for (const relative of quakeInfo.relatives) {
+        await interaction.followUp({
+          embeds: [
+            new MessageEmbed()
+              .setTitle(`震度${relative.intensity}を観測した場所`)
+              .setDescription(relative.points.join('\n')),
+          ],
+        });
+      }
     }
   }
 }
