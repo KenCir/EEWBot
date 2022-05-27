@@ -5,11 +5,11 @@ import { Command } from '../../interfaces/Command';
 
 export default class extends Command {
   public constructor() {
-    super('leave',
+    super('disconnect',
       'VCから退出する',
       'voice',
       new SlashCommandBuilder()
-        .setName('leave')
+        .setName('disconnect')
         .setDescription('VCから退出する'),
     );
   }
