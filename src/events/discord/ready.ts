@@ -14,7 +14,8 @@ export default (client: EEWBot) => {
     void notifyEEWReport(client);
   }, 5000);
 
+  // NHKのQuakeInfo 15秒遅延
   setInterval(() => {
     spawn('php', ['QuakeInfo.php']);
-  }, 5000);
+  }, 15000);
 };
