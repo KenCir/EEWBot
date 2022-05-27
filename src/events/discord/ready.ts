@@ -7,8 +7,6 @@ export default (client: EEWBot) => {
   client.user?.setActivity('/help');
   client.logger.info(`Logged in as ${client.user?.tag as string}`);
 
-  void client.voicevoxClient.notify('テスト');
-
   setInterval(() => {
     void EEWMonitor(client);
     void notifyEEWReport(client);
