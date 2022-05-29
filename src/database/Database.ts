@@ -89,7 +89,7 @@ export default class Database {
     for (const data of datas) {
       data.mention_roles = JSON.parse(data.mention_roles);
     }
-    return this.sql.prepare('SELECT * FROM eew_channels;').all() as Array<EEWChannelData>;
+    return datas as Array<EEWChannelData>;
   }
 
   /**
