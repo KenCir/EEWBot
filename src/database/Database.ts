@@ -158,6 +158,12 @@ export default class Database {
     return this.sql.prepare('SELECT * FROM voice_eew_settings WHERE guild_id = ?;').get(guildId);
   }
 
+  public getAllVoiceEEWSetting(intensity: number, magnitude: number): Array<VoiceEEWSetting> {
+    const datas = this.sql.prepare('SELECT * FROM voice_eew_settings WHERE min_intensity <= ? OR magnitude = ?;').all(intensity, magnitude);
+
+    return datas as Array<VoiceEEWSetting>;
+  }
+
   public addVoiceEEWSetting(guildId: string, minIntensity: number, magnitude: number): void {
     if (this.getVoiceEEWSetting(guildId)) return;
     this.sql.prepare('INSERT INTO voice_eew_settings VALUES (?, ?, ?);').run(guildId, minIntensity, magnitude);
@@ -170,6 +176,12 @@ export default class Database {
 
   public getVoiceQuakeInfoSetting(guildId: string): VoiceQuakeInfoSetting | undefined {
     return this.sql.prepare('SELECT * FROM voice_quakeinfo_settings WHERE guild_id = ?;').get(guildId);
+  }
+
+  public getAllVoiceQuakeInfoSetting(intensity: number, magnitude: number): Array<VoiceQuakeInfoSetting> {
+    const datas = this.sql.prepare('SELECT * FROM voice_quakeinfo_settings WHERE min_intensity <= ? OR magnitude = ?;').all(intensity, magnitude);
+
+    return datas as Array<VoiceQuakeInfoSetting>;
   }
 
   public addVoiceQuakeInfoSetting(guildId: string, minIntensity: number, magnitude: number): void {

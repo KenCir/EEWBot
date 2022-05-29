@@ -26,12 +26,13 @@ export default async (client: EEWBot) => {
       oldEEWData = null;
     }
 
+    const notifyGuilds = client.database.getAllVoiceEEWSetting(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3.5 ? 1 : 0).map(setting => setting.guild_id);
     if (!oldEEWData) {
-      client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`)
+      client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`, notifyGuilds)
         .catch(e => client.logger.error(e));
     }
     else if (eewData.is_final) {
-      client.voicevoxClient.notify(`緊急地震速報の最終報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`)
+      client.voicevoxClient.notify(`緊急地震速報の最終報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`, notifyGuilds)
         .catch(e => client.logger.error(e));
     }
 
