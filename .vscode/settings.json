@@ -1,8 +1,4 @@
 {
   "python.formatting.provider": "black",
-  "cSpell.words": [
-    "Kyoushin",
-    "quakeinfo",
-    "voicevox"
-  ]
+  "cSpell.words": ["editrole", "Kyoushin", "quakeinfo", "voicevox"]
 }

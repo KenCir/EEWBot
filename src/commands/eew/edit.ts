@@ -158,7 +158,7 @@ export default class extends Command {
         const responseMagnitude = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseMagnitude.customId === 'ok') {
           client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, 1);
-          await responseMagnitude.followUp('M3.5以上の緊急地震速報を通知するに変更しました');
+          await responseMagnitude.update('M3.5以上の緊急地震速報を通知するに変更しました');
         }
         else if (responseMagnitude.customId === 'no') {
           client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, 0);

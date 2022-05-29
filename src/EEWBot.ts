@@ -22,7 +22,7 @@ export default class EEWBot extends Client {
         Intents.FLAGS.GUILD_VOICE_STATES,
       ],
       allowedMentions: {
-        parse: [],
+        parse: ['roles'],
         repliedUser: false,
       },
     });

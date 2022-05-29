@@ -64,7 +64,7 @@ export default class VOICEVOXClient {
     rmSync('dat/voices', { recursive: true });
   }
 
-  public async notify(text: string): Promise<void> {
+  public async notify(text: string, guildIds: Array<string>): Promise<void> {
     const audioQuery = await this.api.post(`audio_query?text=${encodeURI(text)}&speaker=2`);
     const synthesis = await this.api.post('synthesis?speaker=8', JSON.stringify(audioQuery.data), {
       responseType: 'arraybuffer',
@@ -79,6 +79,7 @@ export default class VOICEVOXClient {
     writeFileSync(`dat/voices/${id}.wav`, Buffer.from(synthesis.data as Array<number>), 'binary');
 
     this.speakers.forEach(speaker => {
+      if (!guildIds.includes(speaker.guildId)) return;
       speaker.queue.push(id);
 
       if (speaker.player.state.status === AudioPlayerStatus.Idle) {

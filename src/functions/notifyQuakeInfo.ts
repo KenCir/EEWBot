@@ -1,3 +1,4 @@
+import { roleMention } from '@discordjs/builders';
 import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
@@ -10,7 +11,8 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
 
   // 震源情報が未発表
   if (quakeInfo.epicenter === '' && quakeInfo.id !== oldQuakeInfo?.id) {
-    void client.voicevoxClient.notify(`先ほど最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
+    const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity), 0).map(setting => setting.guild_id);
+    void client.voicevoxClient.notify(`先ほど最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`, notifyGuilds)
       .catch(e => client.logger.error(e));
 
     client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), 0)
@@ -23,6 +25,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         }
 
         await quakeInfoChannel.send({
+          content: quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
           embeds: [
             new MessageEmbed()
               .setTitle('地震情報')
@@ -70,7 +73,8 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
     return;
   }
 
-  void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`)
+  const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0).map(setting => setting.guild_id);
+  void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`, notifyGuilds)
     .catch(e => client.logger.error(e));
 
   client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0)
@@ -83,6 +87,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       }
 
       await quakeInfoChannel.send({
+        content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
         embeds: [
           new MessageEmbed()
             .setTitle('地震情報')
