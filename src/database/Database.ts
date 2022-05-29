@@ -3,7 +3,8 @@ import SQLite3 from 'better-sqlite3';
 import { EEWChannelData } from './EEWChannelData';
 import { QuakeInfoChannelData } from './QuakeInfoChannelData';
 import { ReportedData } from './ReportedData';
-import { VoiceSetting } from './VoiceSetting';
+import { VoiceEEWSetting } from './VoiceEEWSetting';
+import { VoiceQuakeInfoSetting } from './VoiceQuakeInfoSetting';
 
 export default class Database {
   public readonly sql: SQLite3.Database;
@@ -31,11 +32,18 @@ export default class Database {
       this.sql.prepare('CREATE UNIQUE INDEX idx_quakeinfo_channels_id ON quakeinfo_channels (channelid);').run();
     }
 
-    // VC settings
-    const voiceSettingTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'voice_settings\';').get();
-    if (!voiceSettingTable['count(*)']) {
-      this.sql.prepare('CREATE TABLE voice_settings (guild_id TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER);').run();
-      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_settings_id ON voice_settings (guild_id);').run();
+    // VC settings EEW
+    const voiceEEWSettingTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'voice_eew_settings\';').get();
+    if (!voiceEEWSettingTable['count(*)']) {
+      this.sql.prepare('CREATE TABLE voice_eew_settings (guild_id TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER);').run();
+      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_eew_settings_id ON voice_eew_settings (guild_id);').run();
+    }
+
+    // VC settings QuakeInfo
+    const voiceQuakeInfoSettingTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'voice_quakeinfo_settings\';').get();
+    if (!voiceQuakeInfoSettingTable['count(*)']) {
+      this.sql.prepare('CREATE TABLE voice_quakeinfo_settings (guild_id TEXT PRIMARY KEY, min_intensity INTEGER, magnitude INTEGER);').run();
+      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_quakeinfo_settings_id ON voice_quakeinfo_settings (guild_id);').run();
     }
 
     this.sql.pragma('synchronous = 1');
@@ -146,17 +154,31 @@ export default class Database {
     this.sql.prepare('DELETE FROM quakeinfo_channels WHERE channelid = ?;').run(channelId);
   }
 
-  public getVoiceSetting(guildId: string): VoiceSetting | undefined {
-    return this.sql.prepare('SELECT * FROM voice_settings WHERE guild_id = ?;').get(guildId);
+  public getVoiceEEWSetting(guildId: string): VoiceEEWSetting | undefined {
+    return this.sql.prepare('SELECT * FROM voice_eew_settings WHERE guild_id = ?;').get(guildId);
   }
 
-  public addVoiceSetting(guildId: string, minIntensity: number, magnitude: number): void {
-    if (this.getVoiceSetting(guildId)) return;
-    this.sql.prepare('INSERT INTO voice_settings VALUES (?, ?, ?);').run(guildId, minIntensity, magnitude);
+  public addVoiceEEWSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (this.getVoiceEEWSetting(guildId)) return;
+    this.sql.prepare('INSERT INTO voice_eew_settings VALUES (?, ?, ?);').run(guildId, minIntensity, magnitude);
   }
 
-  public updateVoiceSetting(guildId: string, minIntensity: number, magnitude: number): void {
-    if (!this.getVoiceSetting(guildId)) return;
-    this.sql.prepare('UPDATE voice_settings SET min_intensity = ?, magnitude = ? WHERE guild_id = ?;').run(minIntensity, magnitude, guildId);
+  public editVoiceEEWSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (!this.getVoiceEEWSetting(guildId)) return;
+    this.sql.prepare('UPDATE voice_eew_settings SET min_intensity = ?, magnitude = ? WHERE guild_id = ?;').run(minIntensity, magnitude, guildId);
+  }
+
+  public getVoiceQuakeInfoSetting(guildId: string): VoiceQuakeInfoSetting | undefined {
+    return this.sql.prepare('SELECT * FROM voice_quakeinfo_settings WHERE guild_id = ?;').get(guildId);
+  }
+
+  public addVoiceQuakeInfoSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (this.getVoiceQuakeInfoSetting(guildId)) return;
+    this.sql.prepare('INSERT INTO voice_quakeinfo_settings VALUES (?, ?, ?);').run(guildId, minIntensity, magnitude);
+  }
+
+  public editVoiceQuakeInfoSetting(guildId: string, minIntensity: number, magnitude: number): void {
+    if (!this.getVoiceQuakeInfoSetting(guildId)) return;
+    this.sql.prepare('UPDATE voice_quakeinfo_settings SET min_intensity = ?, magnitude = ? WHERE guild_id = ?;').run(minIntensity, magnitude, guildId);
   }
 }

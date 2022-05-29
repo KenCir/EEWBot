@@ -1,4 +1,4 @@
-export interface VoiceSetting {
+export interface VoiceEEWSetting {
   guild_id: string;
 
   /**
