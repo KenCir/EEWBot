@@ -10,7 +10,7 @@ export default (client: EEWBot) => {
   setInterval(() => {
     void EEWMonitor(client);
     void notifyEEWReport(client);
-  }, 5000);
+  }, 1000);
 
   // NHKのQuakeInfo 15秒遅延
   setInterval(() => {
