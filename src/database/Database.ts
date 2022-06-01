@@ -50,8 +50,8 @@ export default class Database {
     // VC Status
     const voiceStatusTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'voice_status\';').get();
     if (!voiceStatusTable['count(*)']) {
-      this.sql.prepare('CREATE TABLE voice_status (channel_id TEXT PRIMARY KEY);').run();
-      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_status_id ON voice_status (channel_id);').run();
+      this.sql.prepare('CREATE TABLE voice_status (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);').run();
+      this.sql.prepare('CREATE UNIQUE INDEX idx_voice_status_id ON voice_status (guild_id);').run();
     }
 
     this.sql.pragma('synchronous = 1');
@@ -206,19 +206,19 @@ export default class Database {
     return this.sql.prepare('SELECT * FROM voice_status;').all() as Array<VoiceState>;
   }
 
-  public hasVoiceStatus(channelId: string): boolean {
-    return !!this.sql.prepare('SELECT * FROM voice_status WHERE channel_id = ?;').get(channelId);
+  public getVoiceStatus(guildId: string): boolean {
+    return !!this.sql.prepare('SELECT * FROM voice_status WHERE guild_id = ?;').get(guildId);
   }
 
-  public addVoiceStatus(channelId: string): void {
-    if (this.hasVoiceStatus(channelId)) return;
+  public addVoiceStatus(guildId: string): void {
+    if (this.getVoiceStatus(guildId)) return;
 
-    this.sql.prepare('INSERT INTO voice_status VALUES (?);').run(channelId);
+    this.sql.prepare('INSERT INTO voice_status VALUES (?);').run(guildId);
   }
 
-  public removeVoiceStatus(channelId: string): void {
-    if (!this.hasVoiceStatus(channelId)) return;
+  public removeVoiceStatus(guildId: string): void {
+    if (!this.getVoiceStatus(guildId)) return;
 
-    this.sql.prepare('DELETE FROM voice_status WHERE channel_id = ?;').run(channelId);
+    this.sql.prepare('DELETE FROM voice_status WHERE guild_id = ?;').run(guildId);
   }
 }
