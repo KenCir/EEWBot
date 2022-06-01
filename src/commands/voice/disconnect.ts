@@ -20,12 +20,13 @@ export default class extends Command {
       return;
     }
 
-    if (!client.voicevoxClient.get(interaction.guildId as string)) {
+    if (!client.database.getVoiceStatus(interaction.guildId as string) && !client.voicevoxClient.get(interaction.guildId as string)) {
       await interaction.followUp('VCに参加してません');
       return;
     }
 
+    client.database.removeVoiceStatus(interaction.guildId as string);
     client.voicevoxClient.leave(interaction.guildId as string);
-    await interaction.followUp('VCから退出しました');
+    await interaction.followUp('読み上げを停止しました');
   }
 }

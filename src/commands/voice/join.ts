@@ -9,9 +9,14 @@ export default class extends Command {
     super('join',
       'VCに参加して地震速報等の読み上げを開始する',
       'voice',
-      new SlashCommandBuilder()
+      (new SlashCommandBuilder()
         .setName('join')
-        .setDescription('VCに参加して地震速報等の読み上げを開始する'),
+        .setDescription('VCに参加して地震速報等の読み上げを開始する')
+        .addChannelOption(option => option
+          .setName('channel')
+          .setDescription('読み上げするVCチャンネル')
+          .setRequired(true),
+        ) as SlashCommandBuilder),
     );
   }
 
@@ -21,16 +26,23 @@ export default class extends Command {
       return;
     }
 
-    if (client.voicevoxClient.get(interaction.guildId as string)) {
-      await interaction.followUp('既にVC参加済みです');
-      return;
-    }
-    else if (!(interaction.member as GuildMember).voice.channelId) {
-      await interaction.followUp('VCに参加してからこのコマンドを使用してください');
+    const channel = interaction.options.getChannel('channel', true);
+    if (channel.type !== 'GUILD_VOICE' && channel.type !== 'GUILD_STAGE_VOICE') {
+      await interaction.followUp('読み上げチャンネルはVCかステージチャンネルである必要があります');
       return;
     }
 
-    client.voicevoxClient.add(interaction.guildId as string, (interaction.member as GuildMember).voice.channelId as string, (interaction.guild as Guild).voiceAdapterCreator as DiscordGatewayAdapterCreator);
-    await interaction.followUp('VCに参加しました');
+    client.database.removeVoiceStatus(interaction.guildId as string);
+    client.database.addVoiceStatus(interaction.guildId as string);
+
+
+    // 既にBot以外の誰かが参加していたなら
+    if (channel.members.filter(m => !m.user.bot).size >= 1) {
+      client.voicevoxClient.add(interaction.guildId as string, (interaction.member as GuildMember).voice.channelId as string, (interaction.guild as Guild).voiceAdapterCreator as DiscordGatewayAdapterCreator);
+      await interaction.followUp('VCで読み上げを開始しました');
+    }
+    else {
+      await interaction.followUp('VC読み上げチャンネルを設定しました');
+    }
   }
 }
