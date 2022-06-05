@@ -11,16 +11,16 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
 
   // 震源情報が未発表
   if (quakeInfo.epicenter === '' && quakeInfo.id !== oldQuakeInfo?.id) {
-    const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity), 0).map(setting => setting.guild_id);
+    const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity)).map(setting => setting.guild_id);
     void client.voicevoxClient.notify(`先ほど最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`, notifyGuilds)
       .catch(e => client.logger.error(e));
 
-    client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), 0)
+    client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity))
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       .forEach(async quakeInfoChannelData => {
-        const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channelid) as TextChannel;
+        const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channel_id) as TextChannel;
         if (!quakeInfoChannel) {
-          client.database.removeQuakeInfoChannel(quakeInfoChannelData.channelid);
+          client.database.removeQuakeInfoChannel(quakeInfoChannelData.channel_id);
           return;
         }
 
@@ -73,16 +73,16 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
     return;
   }
 
-  const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0).map(setting => setting.guild_id);
+  const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity)).map(setting => setting.guild_id);
   void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`, notifyGuilds)
     .catch(e => client.logger.error(e));
 
-  client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity), Number(quakeInfo.magnitude) >= 3.5 ? 1 : 0)
+  client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeInfo.intensity))
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     .forEach(async quakeInfoChannelData => {
-      const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channelid) as TextChannel;
+      const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channel_id) as TextChannel;
       if (!quakeInfoChannel) {
-        client.database.removeQuakeInfoChannel(quakeInfoChannelData.channelid);
+        client.database.removeQuakeInfoChannel(quakeInfoChannelData.channel_id);
         return;
       }
 
