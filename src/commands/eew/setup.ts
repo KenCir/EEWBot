@@ -129,44 +129,13 @@ export default class extends Command {
       const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
       const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
 
+      client.database.addEEWChannel(interaction.channelId, intensity, []);
       await responseIntensity.update({
-        embeds: [
-          new MessageEmbed()
-            .setTitle('緊急地震速報通知のセットアップ')
-            .setDescription('M3.5以上が予想される緊急地震速報を通知しますか？')
-            .setColor('RANDOM'),
-        ],
-        components: [
-          new MessageActionRow()
-            .addComponents(
-              new MessageButton()
-                .setCustomId('ok')
-                .setEmoji('✅')
-                .setStyle('PRIMARY'),
-              new MessageButton()
-                .setCustomId('no')
-                .setEmoji('❌')
-                .setStyle('PRIMARY'),
-            ),
-        ],
-      });
-      const responseMagnitude = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
-      let magnitude = 0;
-      if (responseMagnitude.customId === 'ok') {
-        magnitude = 1;
-      }
-      else if (responseMagnitude.customId === 'no') {
-        magnitude = 0;
-      }
-
-      client.database.addEEWChannel(interaction.channelId, intensity, [], magnitude);
-      await responseMagnitude.update({
         embeds: [
           new MessageEmbed()
             .setTitle('緊急地震速報通知セットアップ完了')
             .setDescription('緊急地震速報通知セットアップが完了しました')
             .addField('通知最小震度', intensityNumberToString(intensity))
-            .addField('M3.5以上', magnitude === 0 ? '通知しない' : '通知する')
             .setColor('RANDOM'),
         ],
         components: [],
@@ -273,37 +242,6 @@ export default class extends Command {
         embeds: [
           new MessageEmbed()
             .setTitle('地震通知のセットアップ')
-            .setDescription('M3.5以上が予想される緊急地震速報を通知しますか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
-        ],
-        components: [
-          new MessageActionRow()
-            .addComponents(
-              new MessageButton()
-                .setCustomId('ok')
-                .setEmoji('✅')
-                .setStyle('PRIMARY'),
-              new MessageButton()
-                .setCustomId('no')
-                .setEmoji('❌')
-                .setStyle('PRIMARY'),
-            ),
-        ],
-      });
-      const responseMagnitude = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
-      let magnitude = 0;
-      if (responseMagnitude.customId === 'ok') {
-        magnitude = 1;
-      }
-      else if (responseMagnitude.customId === 'no') {
-        magnitude = 0;
-      }
-
-      await responseMagnitude.update({
-        embeds: [
-          new MessageEmbed()
-            .setTitle('地震通知のセットアップ')
             .setDescription('通知時に震度マップを送信しますか？')
             .setFooter({ text: '60秒以内に選択してください' })
             .setColor('RANDOM'),
@@ -354,14 +292,13 @@ export default class extends Command {
       if (responseRelative.customId === 'ok') relative = 1;
       else if (responseRelative.customId === 'no') relative = 0;
 
-      client.database.addQuakeInfoChannel(interaction.channelId, intensity, magnitude, [], image, relative);
+      client.database.addQuakeInfoChannel(interaction.channelId, intensity, [], image, relative);
       await responseRelative.update({
         embeds: [
           new MessageEmbed()
             .setTitle('地震通知セットアップ完了')
             .setDescription('地震通知セットアップが完了しました')
             .addField('通知最小震度', intensityNumberToString(intensity))
-            .addField('M3.5以上', magnitude === 0 ? '通知しない' : '通知する')
             .addField('通知時に震度マップを送信', image === 0 ? 'しない' : 'する')
             .addField('通知時に各地の震度情報を送信', relative === 0 ? 'しない' : 'する'),
         ],

@@ -50,12 +50,12 @@ export default class extends Command {
 
       if (eewNotifyData.mention_roles.includes(role.id)) {
         eewNotifyData.mention_roles = eewNotifyData.mention_roles.filter(v => v !== role.id);
-        client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, eewNotifyData.magnitude);
+        client.database.editEEWChannel(eewNotifyData.channel_id, eewNotifyData.min_intensity, eewNotifyData.mention_roles);
         await interaction.followUp(`${role.name}を緊急地震速報通知ロールから削除しました`);
       }
       else {
         eewNotifyData.mention_roles.push(role.id);
-        client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, eewNotifyData.magnitude);
+        client.database.editEEWChannel(eewNotifyData.channel_id, eewNotifyData.min_intensity, eewNotifyData.mention_roles);
         await interaction.followUp(`${role.name}を緊急地震速報通知ロールに追加しました`);
       }
     }
@@ -68,12 +68,12 @@ export default class extends Command {
 
       if (quakeInfoNotifyData.mention_roles.includes(role.id)) {
         quakeInfoNotifyData.mention_roles = quakeInfoNotifyData.mention_roles.filter(v => v !== role.id);
-        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
+        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
         await interaction.followUp(`${role.name}を地震通知ロールから削除しました`);
       }
       else {
         quakeInfoNotifyData.mention_roles.push(role.id);
-        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
+        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
         await interaction.followUp(`${role.name}を地震通知ロールに追加しました`);
       }
     }

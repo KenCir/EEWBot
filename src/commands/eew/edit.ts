@@ -43,8 +43,7 @@ export default class extends Command {
           new MessageEmbed()
             .setTitle('設定を編集する項目を選択してください')
             .addField('設定項目名', '現在の設定')
-            .addField('最小地震', intensityNumberToString(eewNotifyData.min_intensity))
-            .addField('M3.5以上', eewNotifyData.magnitude === 0 ? '通知しない' : '通知する'),
+            .addField('最小地震', intensityNumberToString(eewNotifyData.min_intensity)),
         ],
         components: [
           new MessageActionRow()
@@ -55,10 +54,6 @@ export default class extends Command {
                   {
                     label: '最小震度',
                     value: 'intensity',
-                  },
-                  {
-                    label: 'M3.5以上',
-                    value: 'magnitude',
                   },
                 ]),
             ),
@@ -124,50 +119,12 @@ export default class extends Command {
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
         const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
-        client.database.editEEWChannel(eewNotifyData.channelid, intensity, eewNotifyData.mention_roles, eewNotifyData.magnitude);
+        client.database.editEEWChannel(eewNotifyData.channel_id, intensity, eewNotifyData.mention_roles);
         await responseIntensity.update({
           content: `最小通知震度を${intensityNumberToString(intensity)}に変更しました`,
           embeds: [],
           components: [],
         });
-      }
-      else if (responseEdit.values[0] === 'magnitude') {
-        await responseEdit.update({
-          embeds: [
-            new MessageEmbed()
-              .setTitle('緊急地震速報通知の編集')
-              .setDescription('M3.5以上が予想される緊急地震速報を通知しますか？')
-              .setColor('RANDOM'),
-          ],
-          components: [
-            new MessageActionRow()
-              .addComponents(
-                new MessageButton()
-                  .setCustomId('ok')
-                  .setEmoji('✅')
-                  .setStyle('PRIMARY'),
-                new MessageButton()
-                  .setCustomId('no')
-                  .setEmoji('❌')
-                  .setStyle('PRIMARY'),
-              ),
-          ],
-        });
-
-        const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-        const responseMagnitude = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
-        if (responseMagnitude.customId === 'ok') {
-          client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, 1);
-          await responseMagnitude.update('M3.5以上の緊急地震速報を通知するに変更しました');
-        }
-        else if (responseMagnitude.customId === 'no') {
-          client.database.editEEWChannel(eewNotifyData.channelid, eewNotifyData.min_intensity, eewNotifyData.mention_roles, 0);
-          await responseMagnitude.update({
-            content: 'M3.5以上の緊急地震速報を通知しないに変更しました',
-            embeds: [],
-            components: [],
-          });
-        }
       }
     }
     else if (interaction.options.getSubcommand() === 'quakeinfo') {
@@ -183,7 +140,6 @@ export default class extends Command {
             .setTitle('設定を編集する項目を選択してください')
             .addField('設定項目名', '現在の設定')
             .addField('最小地震', intensityNumberToString(quakeInfoNotifyData.min_intensity))
-            .addField('M3.5以上', quakeInfoNotifyData.magnitude === 0 ? '通知しない' : '通知する')
             .addField('通知時に震度マップを送信', quakeInfoNotifyData.image === 0 ? 'しない' : 'する')
             .addField('通知時に各地の震度情報を送信', quakeInfoNotifyData.relative === 0 ? 'しない' : 'する'),
         ],
@@ -196,10 +152,6 @@ export default class extends Command {
                   {
                     label: '最小震度',
                     value: '最小震度',
-                  },
-                  {
-                    label: 'M3.5以上',
-                    value: 'M3.5以上',
                   },
                   {
                     label: '通知時に震度マップを送信',
@@ -272,49 +224,12 @@ export default class extends Command {
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
         const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
-        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
+        client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
         await responseIntensity.update({
           content: `最小通知震度を${intensityNumberToString(intensity)}に変更しました`,
           embeds: [],
           components: [],
         });
-      }
-      else if (responseEdit.values[0] === 'M3.5以上') {
-        await responseEdit.update({
-          embeds: [
-            new MessageEmbed()
-              .setTitle('地震通知の編集')
-              .setDescription('M3.5以上の地震を通知しますか？'),
-          ],
-          components: [
-            new MessageActionRow()
-              .addComponents(
-                new MessageButton()
-                  .setCustomId('ok')
-                  .setEmoji('✅')
-                  .setStyle('PRIMARY'),
-                new MessageButton()
-                  .setCustomId('no')
-                  .setEmoji('❌')
-                  .setStyle('PRIMARY'),
-              ),
-          ],
-        });
-
-        const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-        const responseMagnitude = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
-        if (responseMagnitude.customId === 'ok') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, 1, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-          await responseMagnitude.update('M3.5以上の地震を通知するに変更しました');
-        }
-        else if (responseMagnitude.customId === 'no') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, 0, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
-          await responseMagnitude.update({
-            content: 'M3.5以上の地震を通知しないに変更しました',
-            embeds: [],
-            components: [],
-          });
-        }
       }
       else if (responseEdit.values[0] === '通知時に震度マップを送信') {
         await responseEdit.update({
@@ -341,7 +256,7 @@ export default class extends Command {
         const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
         const responseImage = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseImage.customId === 'ok') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 1, quakeInfoNotifyData.relative);
+          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, 1, quakeInfoNotifyData.relative);
           await responseImage.update({
             content: '通知時に震度マップを送信するに変更しました',
             embeds: [],
@@ -349,7 +264,7 @@ export default class extends Command {
           });
         }
         else if (responseImage.customId === 'no') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, 0, quakeInfoNotifyData.relative);
+          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, 0, quakeInfoNotifyData.relative);
           await responseImage.update({
             content: '通知時に震度マップを送信しないに変更しました',
             embeds: [],
@@ -382,7 +297,7 @@ export default class extends Command {
         const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
         const responseRelative = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
         if (responseRelative.customId === 'ok') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 1);
+          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 1);
           await responseRelative.update({
             content: '通知時に各地の震度情報を送信するに変更しました',
             embeds: [],
@@ -390,7 +305,7 @@ export default class extends Command {
           });
         }
         else if (responseRelative.customId === 'no') {
-          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channelid, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.magnitude, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 0);
+          client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 0);
           await responseRelative.update({
             content: '通知時に各地の震度情報を送信しないに変更しました',
             embeds: [],
