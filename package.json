@@ -13,7 +13,7 @@
     "eslint": "eslint src/",
     "eslint:fix": "eslint src/ --fix",
     "lint": "npm-run-all eslint check-types",
-    "registercommand": "ts-node src/utils/registerSlashCommands.ts"
+    "registerSlashCommand": "ts-node src/utils/registerSlashCommands.ts"
   },
   "keywords": [],
   "author": "Ken_Cir",

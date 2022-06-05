@@ -77,7 +77,7 @@ export default class extends Command {
       }
     }
     else if (interaction.options.getSubcommand() === 'quakeinfo') {
-      if (!client.database.getEEWChannel(interaction.channelId)) {
+      if (!client.database.getQuakeInfoChannel(interaction.channelId)) {
         await interaction.followUp('このチャンネルは登録されていません');
         return;
       }
