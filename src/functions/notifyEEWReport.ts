@@ -26,7 +26,7 @@ export default async (client: EEWBot) => {
       oldEEWData = null;
     }
 
-    const notifyGuilds = client.database.getAllVoiceEEWSetting(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3.5 ? 1 : 0).map(setting => setting.guild_id);
+    const notifyGuilds = client.database.getAllVoiceEEWSetting(intensityStringToNumber(eewData.calcintensity)).map(setting => setting.guild_id);
     if (!oldEEWData) {
       client.voicevoxClient.notify(`緊急地震速報を受信しました。震源は${eewData.region_name}、予想される最大震度は${eewData.calcintensity}、予想されるマグニチュードは${eewData.magunitude}です`, notifyGuilds)
         .catch(e => client.logger.error(e));
@@ -58,12 +58,12 @@ export default async (client: EEWBot) => {
       }
     }
 
-    client.database.getAllEEWChannel(intensityStringToNumber(eewData.calcintensity), Number(eewData.magunitude) >= 3.5 ? 1 : 0)
+    client.database.getAllEEWChannel(intensityStringToNumber(eewData.calcintensity))
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       .forEach(async eewChannelData => {
-        const eewChannel: TextChannel = client.channels.cache.get(eewChannelData.channelid) as TextChannel;
+        const eewChannel: TextChannel = client.channels.cache.get(eewChannelData.channel_id) as TextChannel;
         if (!eewChannel) {
-          client.database.removeEEWChannel(eewChannelData.channelid);
+          client.database.removeEEWChannel(eewChannelData.channel_id);
           return;
         }
 
