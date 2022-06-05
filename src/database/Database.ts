@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument */
 import SQLite3 from 'better-sqlite3';
-import { VoiceState } from 'discord.js';
+import { VoiceStatus } from './VoiceStatus';
 import { EEWChannelData } from './EEWChannelData';
 import { QuakeInfoChannelData } from './QuakeInfoChannelData';
 import { ReportedData } from './ReportedData';
@@ -202,18 +202,18 @@ export default class Database {
     this.sql.prepare('UPDATE voice_quakeinfo_settings SET min_intensity = ?, magnitude = ? WHERE guild_id = ?;').run(minIntensity, magnitude, guildId);
   }
 
-  public getAllVoiceStatus(): Array<VoiceState> {
-    return this.sql.prepare('SELECT * FROM voice_status;').all() as Array<VoiceState>;
+  public getAllVoiceStatus(): Array<VoiceStatus> {
+    return this.sql.prepare('SELECT * FROM voice_status;').all() as Array<VoiceStatus>;
   }
 
-  public getVoiceStatus(guildId: string): boolean {
-    return !!this.sql.prepare('SELECT * FROM voice_status WHERE guild_id = ?;').get(guildId);
+  public getVoiceStatus(guildId: string): VoiceStatus | undefined {
+    return this.sql.prepare('SELECT * FROM voice_status WHERE guild_id = ?;').get(guildId) as VoiceStatus;
   }
 
-  public addVoiceStatus(guildId: string): void {
+  public addVoiceStatus(guildId: string, channelId: string): void {
     if (this.getVoiceStatus(guildId)) return;
 
-    this.sql.prepare('INSERT INTO voice_status VALUES (?);').run(guildId);
+    this.sql.prepare('INSERT INTO voice_status VALUES (?, ?);').run(guildId, channelId);
   }
 
   public removeVoiceStatus(guildId: string): void {

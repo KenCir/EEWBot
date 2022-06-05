@@ -33,7 +33,7 @@ export default class extends Command {
     }
 
     client.database.removeVoiceStatus(interaction.guildId as string);
-    client.database.addVoiceStatus(interaction.guildId as string);
+    client.database.addVoiceStatus(interaction.guildId as string, channel.id);
 
 
     // 既にBot以外の誰かが参加していたなら
