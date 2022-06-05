@@ -105,7 +105,7 @@ export default class Database {
    */
   public addEEWChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>): void {
     if (this.getEEWChannel(channelId)) return;
-    this.sql.prepare('INSERT INTO eew_channels VALUES (?, ?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles));
+    this.sql.prepare('INSERT INTO eew_channels VALUES (?, ?, ?);').run(channelId, minIntensity, JSON.stringify(mentionRoles));
   }
 
   public editEEWChannel(channelId: string, minIntensity: number, mentionRoles: Array<string>): void {

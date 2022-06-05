@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, GuildMember, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, Message } from 'discord.js';
+import { CommandInteraction, CacheType, GuildMember, MessageActionRow, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, Message } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityStringToNumber, intensityNumberToString } from '../../utils/IntensityUtil';
@@ -34,7 +34,6 @@ export default class extends Command {
     if (interaction.options.getSubcommand() === 'eew') {
       const setting = client.database.getVoiceEEWSetting(interaction.guildId as string);
       if (!setting) {
-        const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
         const setupMsg: Message = await interaction.followUp({
           embeds: [
             new MessageEmbed()
@@ -93,44 +92,13 @@ export default class extends Command {
         const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
 
-        await responseIntensity.update({
-          embeds: [
-            new MessageEmbed()
-              .setTitle('VC読み上げ、緊急地震速報通知設定')
-              .setDescription('M3.5以上が予想される緊急地震速報を読み上げますか？')
-              .setColor('RANDOM'),
-          ],
-          components: [
-            new MessageActionRow()
-              .addComponents(
-                new MessageButton()
-                  .setCustomId('ok')
-                  .setEmoji('✅')
-                  .setStyle('PRIMARY'),
-                new MessageButton()
-                  .setCustomId('no')
-                  .setEmoji('❌')
-                  .setStyle('PRIMARY'),
-              ),
-          ],
-        });
-        const responseMagnitude = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
-        let magnitude = 0;
-        if (responseMagnitude.customId === 'ok') {
-          magnitude = 1;
-        }
-        else if (responseMagnitude.customId === 'no') {
-          magnitude = 0;
-        }
-
         client.database.addVoiceEEWSetting(interaction.guildId as string, intensity);
-        await responseMagnitude.update({
+        await responseIntensity.update({
           embeds: [
             new MessageEmbed()
               .setTitle('VC読み上げ、緊急地震速報通知設定、セットアップ完了')
               .setDescription('VC読み上げ、緊急地震速報通知設定セットアップが完了しました')
               .addField('通知最小震度', intensityNumberToString(intensity))
-              .addField('M3.5以上', magnitude === 0 ? '通知しない' : '通知する')
               .setColor('RANDOM'),
           ],
           components: [],
@@ -317,10 +285,6 @@ export default class extends Command {
                     {
                       label: '最小震度',
                       value: 'intensity',
-                    },
-                    {
-                      label: 'M3.5以上',
-                      value: 'magnitude',
                     },
                   ]),
               ),
