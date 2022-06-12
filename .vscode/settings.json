@@ -1,9 +1,12 @@
 {
   "python.formatting.provider": "black",
   "cSpell.words": [
+    "alertflg",
     "discordjs",
     "editrole",
     "Kyoushin",
+    "latitudey",
+    "magunitude",
     "quakeinfo",
     "voicevox"
   ]
