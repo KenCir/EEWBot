@@ -72,6 +72,11 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
 
     return;
   }
+  else if (quakeInfo.local === '' || quakeInfo.global === '') {
+    oldQuakeInfo = quakeInfo;
+
+    return;
+  }
 
   const notifyGuilds = client.database.getAllVoiceQuakeInfoSetting(intensityStringToNumber(quakeInfo.intensity)).map(setting => setting.guild_id);
   void client.voicevoxClient.notify(`${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました、震源の深さは${quakeInfo.depth}、マグニチュードは${quakeInfo.magnitude}です`, notifyGuilds)
