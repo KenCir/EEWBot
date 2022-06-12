@@ -78,7 +78,7 @@ export default async (client: EEWBot) => {
         if (intensityStringToNumber(eewData.calcintensity) < 3) {
           if (oldEEWData && diff.length > 0) {
             await eewChannel.send({
-              content: `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}${codeBlock(diff)}`,
+              content: `${codeBlock(diff)}`,
               embeds: [
                 new MessageEmbed()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
@@ -125,7 +125,7 @@ export default async (client: EEWBot) => {
         else if (intensityStringToNumber(eewData.calcintensity) < 5) {
           if (oldEEWData && diff.length > 0) {
             await eewChannel.send({
-              content: `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}${codeBlock(diff)}`,
+              content: `${codeBlock(diff)}`,
               embeds: [
                 new MessageEmbed()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
@@ -173,7 +173,7 @@ export default async (client: EEWBot) => {
           // eslint-disable-next-line no-lonely-if
           if (oldEEWData && diff.length > 0) {
             await eewChannel.send({
-              content: `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}${codeBlock(diff)}`,
+              content: `${codeBlock(diff)}`,
               embeds: [
                 new MessageEmbed()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)

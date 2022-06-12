@@ -25,7 +25,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         }
 
         await quakeInfoChannel.send({
-          content: quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
+          content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
           embeds: [
             new MessageEmbed()
               .setTitle('地震情報')
