@@ -65,6 +65,9 @@ export default class VOICEVOXClient {
   }
 
   public async notify(text: string, guildIds: Array<string>): Promise<void> {
+    // どこでも読み上げやってないならリソース削減で
+    if (this.speakers.size < 1) return;
+
     const audioQuery = await this.api.post(`audio_query?text=${encodeURI(text)}&speaker=2`);
     const synthesis = await this.api.post('synthesis?speaker=8', JSON.stringify(audioQuery.data), {
       responseType: 'arraybuffer',
