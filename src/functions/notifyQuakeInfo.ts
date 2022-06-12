@@ -72,7 +72,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
 
     return;
   }
-  else if (quakeInfo.local === '' || quakeInfo.global === '') {
+  else if (quakeInfo.local === 'http://www3.nhk.or.jp/sokuho/jishin/' || quakeInfo.global === 'http://www3.nhk.or.jp/sokuho/jishin/') {
     oldQuakeInfo = quakeInfo;
 
     return;
