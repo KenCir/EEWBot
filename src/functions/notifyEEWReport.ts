@@ -19,7 +19,7 @@ export default async (client: EEWBot) => {
       oldEEWData = null;
       return;
     }
-    else if (eewData.report_num === oldEEWData?.report_num) {
+    else if (oldEEWData && Number(eewData.report_num) < Number(oldEEWData?.report_num)) {
       return;
     }
     else if (client.database.getReportedData(eewData.report_id)) {
