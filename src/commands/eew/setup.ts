@@ -25,7 +25,7 @@ export default class extends Command {
         .addSubcommand(subCommand => {
           return subCommand
             .setName('tunami')
-            .setDescription('津波通知のセットアップ');
+            .setDescription('津波予報通知のセットアップ');
         }) as SlashCommandBuilder),
     );
   }
@@ -319,8 +319,8 @@ export default class extends Command {
       const setupMsg: Message = await interaction.followUp({
         embeds: [
           new MessageEmbed()
-            .setTitle('津波通知のセットアップ')
-            .setDescription('津波通知のセットアップを行います、よろしいですか？')
+            .setTitle('津波予報通知のセットアップ')
+            .setDescription('津波予報通知のセットアップを行います、よろしいですか？')
             .setFooter({ text: '60秒以内に選択してください' })
             .setColor('RANDOM'),
         ],
@@ -342,7 +342,7 @@ export default class extends Command {
       const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseSetup.customId === 'no') {
         await responseSetup.update({
-          content: '津波通知セットアップをキャンセルしました',
+          content: '津波予報通知セットアップをキャンセルしました',
           embeds: [],
           components: [],
         });
@@ -353,8 +353,8 @@ export default class extends Command {
       await responseSetup.update({
         embeds: [
           new MessageEmbed()
-            .setTitle('津波通知セットアップ完了')
-            .setDescription('津波通知セットアップが完了しました'),
+            .setTitle('津波予報通知セットアップ完了')
+            .setDescription('津波予報通知セットアップが完了しました'),
         ],
         components: [],
       });
