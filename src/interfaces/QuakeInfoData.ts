@@ -57,5 +57,5 @@ export interface QuakeInfoData {
   /**
    * 各地の観測震度
    */
-  relatives: Array<{ intensity: string, points: Array<string> }>;
+  relatives: Array<{ intensity: string, points: Array<string> }> | { [key: string]: { intensity: string, points: Array<string> } };
 }
