@@ -149,6 +149,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
             await quakeInfoChannel.send({
               embeds: [
                 new MessageEmbed()
+                  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                   .setDescription(quakeInfo.relatives[relative].points.join('\n')),
               ],
