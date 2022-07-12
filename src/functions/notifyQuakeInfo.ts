@@ -51,14 +51,27 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         }
 
         if (quakeInfoChannelData.relative === 1) {
-          for (const relative of quakeInfo.relatives) {
-            await quakeInfoChannel.send({
-              embeds: [
-                new MessageEmbed()
-                  .setTitle(`震度${relative.intensity}を観測した場所`)
-                  .setDescription(relative.points.join('\n')),
-              ],
-            });
+          if (quakeInfo.relatives instanceof Array) {
+            for (const relative of quakeInfo.relatives) {
+              await quakeInfoChannel.send({
+                embeds: [
+                  new MessageEmbed()
+                    .setTitle(`震度${relative.intensity}を観測した場所`)
+                    .setDescription(relative.points.join('\n')),
+                ],
+              });
+            }
+          }
+          else if (quakeInfo.relatives instanceof Object) {
+            for (const relative in quakeInfo.relatives) {
+              await quakeInfoChannel.send({
+                embeds: [
+                  new MessageEmbed()
+                    .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
+                    .setDescription(quakeInfo.relatives[relative].points.join('\n')),
+                ],
+              });
+            }
           }
         }
       });
@@ -120,14 +133,27 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       }
 
       if (quakeInfoChannelData.relative === 1) {
-        for (const relative of quakeInfo.relatives) {
-          await quakeInfoChannel.send({
-            embeds: [
-              new MessageEmbed()
-                .setTitle(`震度${relative.intensity}を観測した場所`)
-                .setDescription(relative.points.join('\n')),
-            ],
-          });
+        if (quakeInfo.relatives instanceof Array) {
+          for (const relative of quakeInfo.relatives) {
+            await quakeInfoChannel.send({
+              embeds: [
+                new MessageEmbed()
+                  .setTitle(`震度${relative.intensity}を観測した場所`)
+                  .setDescription(relative.points.join('\n')),
+              ],
+            });
+          }
+        }
+        else if (quakeInfo.relatives instanceof Object) {
+          for (const relative in quakeInfo.relatives) {
+            await quakeInfoChannel.send({
+              embeds: [
+                new MessageEmbed()
+                  .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
+                  .setDescription(quakeInfo.relatives[relative].points.join('\n')),
+              ],
+            });
+          }
         }
       }
     });
