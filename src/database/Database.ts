@@ -242,7 +242,7 @@ export default class Database {
   public addTunamiChannel(channelId: string): void {
     if (this.getTunamiChannel(channelId)) return;
 
-    this.sql.prepare('INSERT INTO tunami_channels (?);').run(channelId);
+    this.sql.prepare('INSERT INTO tunami_channels VALUES (?);').run(channelId);
   }
 
   public removeTunamiChannel(channelId: string): void {

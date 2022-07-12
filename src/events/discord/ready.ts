@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import EEWBot from '../../EEWBot';
 import notifyEEWReport from '../../functions/notifyEEWReport';
 import EEWMonitor from '../../functions/KyoushinMonitor';
+import P2PHistory from '../../functions/P2PHistory';
 import { DiscordGatewayAdapterCreator } from '@discordjs/voice';
 import { VoiceChannel } from 'discord.js';
 
@@ -29,6 +30,7 @@ export default (client: EEWBot) => {
   setInterval(() => {
     void EEWMonitor(client);
     void notifyEEWReport(client);
+    void P2PHistory(client);
   }, 1000);
 
   // NHKのQuakeInfo 15秒遅延

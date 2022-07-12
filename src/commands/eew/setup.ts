@@ -21,6 +21,11 @@ export default class extends Command {
           return subCommand
             .setName('quakeinfo')
             .setDescription('地震通知のセットアップ');
+        })
+        .addSubcommand(subCommand => {
+          return subCommand
+            .setName('tunami')
+            .setDescription('津波通知のセットアップ');
         }) as SlashCommandBuilder),
     );
   }
@@ -301,6 +306,55 @@ export default class extends Command {
             .addField('通知最小震度', intensityNumberToString(intensity))
             .addField('通知時に震度マップを送信', image === 0 ? 'しない' : 'する')
             .addField('通知時に各地の震度情報を送信', relative === 0 ? 'しない' : 'する'),
+        ],
+        components: [],
+      });
+    }
+    else if (interaction.options.getSubcommand() === 'tunami') {
+      if (client.database.getTunamiChannel(interaction.channelId)) {
+        await interaction.followUp('このチャンネルは既に登録済みです');
+        return;
+      }
+
+      const setupMsg: Message = await interaction.followUp({
+        embeds: [
+          new MessageEmbed()
+            .setTitle('津波通知のセットアップ')
+            .setDescription('津波通知のセットアップを行います、よろしいですか？')
+            .setFooter({ text: '60秒以内に選択してください' })
+            .setColor('RANDOM'),
+        ],
+        components: [
+          new MessageActionRow()
+            .addComponents(
+              new MessageButton()
+                .setCustomId('ok')
+                .setEmoji('✅')
+                .setStyle('PRIMARY'),
+              new MessageButton()
+                .setCustomId('no')
+                .setEmoji('❌')
+                .setStyle('PRIMARY'),
+            ),
+        ],
+      }) as Message;
+      const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
+      const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+      if (responseSetup.customId === 'no') {
+        await responseSetup.update({
+          content: '津波通知セットアップをキャンセルしました',
+          embeds: [],
+          components: [],
+        });
+        return;
+      }
+
+      client.database.addTunamiChannel(interaction.channelId);
+      await responseSetup.update({
+        embeds: [
+          new MessageEmbed()
+            .setTitle('津波通知セットアップ完了')
+            .setDescription('津波通知セットアップが完了しました'),
         ],
         components: [],
       });
