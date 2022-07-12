@@ -6,6 +6,7 @@ import { QuakeInfoChannelData } from './QuakeInfoChannelData';
 import { ReportedData } from './ReportedData';
 import { VoiceEEWSetting } from './VoiceEEWSetting';
 import { VoiceQuakeInfoSetting } from './VoiceQuakeInfoSetting';
+import { TunamiChannelData } from './TunamiChannelData';
 
 export default class Database {
   public readonly sql: SQLite3.Database;
@@ -52,6 +53,13 @@ export default class Database {
     if (!voiceStatusTable['count(*)']) {
       this.sql.prepare('CREATE TABLE voice_status (guild_id TEXT PRIMARY KEY, channel_id TEXT NOT NULL);').run();
       this.sql.prepare('CREATE UNIQUE INDEX idx_voice_status_id ON voice_status (guild_id);').run();
+    }
+
+    // 津波情報を通知Channel
+    const tunamiChannelTable = this.sql.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tunami_channels\';').get();
+    if (!tunamiChannelTable['count(*)']) {
+      this.sql.prepare('CREATE TABLE tunami_channels (channel_id TEXT PRIMARY KEY);').run();
+      this.sql.prepare('CREATE UNIQUE INDEX idx_tunami_channels_id ON voice_status (channel_id);').run();
     }
 
     this.sql.pragma('synchronous = 1');
@@ -221,5 +229,25 @@ export default class Database {
     if (!this.getVoiceStatus(guildId)) return;
 
     this.sql.prepare('DELETE FROM voice_status WHERE guild_id = ?;').run(guildId);
+  }
+
+  public getTunamiChannel(channelId: string): TunamiChannelData | undefined {
+    return this.sql.prepare('SELECT * FROM tunami_channels WHERE channel_id = ?;').get(channelId);
+  }
+
+  public getAllTunamiChannel(): Array<TunamiChannelData> {
+    return this.sql.prepare('SELECT * FROM tunami_channels;').all();
+  }
+
+  public addTunamiChannel(channelId: string): void {
+    if (this.getTunamiChannel(channelId)) return;
+
+    this.sql.prepare('INSERT INTO tunami_channels VALUES (?);').run(channelId);
+  }
+
+  public removeTunamiChannel(channelId: string): void {
+    if (!this.getTunamiChannel(channelId)) return;
+
+    this.sql.prepare('DELETE FROM tunami_channels WHERE channel_id = ?;').run(channelId);
   }
 }
