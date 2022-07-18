@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import axios from 'axios';
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { EmbedBuilder, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { BasicData } from '../interfaces/p2p/BasicData';
 import { JMATunami } from '../interfaces/p2p/JMATunami';
@@ -31,7 +31,7 @@ export default async (client: EEWBot) => {
 
           await channel.send({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle('津波予報情報')
                 .setDescription(tunamiData.areas.map(area => `${tunamiEnumToString(area.grade)} ${area.name} ${area.immediate ? '直ちに津波が到達する可能性有り' : ''}`).join('\n'))
                 .setFooter({ text: `${tunamiData.issue.source}が${tunamiData.time}に発表しました|P2P地震情報` }),

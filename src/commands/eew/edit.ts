@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, GuildMember } from 'discord.js';
+import { CommandInteraction, CacheType, ActionRowBuilder, ButtonBuilder, Message, MessageComponentInteraction, EmbedBuilder, SelectMenuBuilder, GuildMember } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityNumberToString, intensityStringToNumber } from '../../utils/IntensityUtil';
@@ -40,15 +40,15 @@ export default class extends Command {
 
       const editMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('設定を編集する項目を選択してください')
             .addField('設定項目名', '現在の設定')
             .addField('最小地震', intensityNumberToString(eewNotifyData.min_intensity)),
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('editSelect')
                 .setOptions([
                   {
@@ -58,22 +58,22 @@ export default class extends Command {
                 ]),
             ),
         ],
-      }) as Message;
+      }) ;
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
       const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
       if (responseEdit.values[0] === 'intensity') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('緊急地震速報通知の編集')
               .setDescription('通知する最小震度を選択してください')
-              .setFooter({ text: '60秒以内に選択してください' })
-              .setColor('RANDOM'),
+              .setFooter({ text: '60秒以内に選択してください' }),
+
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -136,7 +136,7 @@ export default class extends Command {
 
       const editMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('設定を編集する項目を選択してください')
             .addField('設定項目名', '現在の設定')
             .addField('最小地震', intensityNumberToString(quakeInfoNotifyData.min_intensity))
@@ -144,9 +144,9 @@ export default class extends Command {
             .addField('通知時に各地の震度情報を送信', quakeInfoNotifyData.relative === 0 ? 'しない' : 'する'),
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('editSelect')
                 .setOptions([
                   {
@@ -164,21 +164,21 @@ export default class extends Command {
                 ]),
             ),
         ],
-      }) as Message;
+      }) ;
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
       const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
       if (responseEdit.values[0] === '最小震度') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知する最小震度を選択してください')
               .setFooter({ text: '60秒以内に選択してください' }),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -234,18 +234,18 @@ export default class extends Command {
       else if (responseEdit.values[0] === '通知時に震度マップを送信') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知時に震度マップを送信しますか？'),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('ok')
                   .setEmoji('✅')
                   .setStyle('PRIMARY'),
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('no')
                   .setEmoji('❌')
                   .setStyle('PRIMARY'),
@@ -275,18 +275,18 @@ export default class extends Command {
       else if (responseEdit.values[0] === '通知時に各地の震度情報を送信') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知時に各地の震度情報を送信しますか？'),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('ok')
                   .setEmoji('✅')
                   .setStyle('PRIMARY'),
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('no')
                   .setEmoji('❌')
                   .setStyle('PRIMARY'),

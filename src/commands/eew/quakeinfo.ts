@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageEmbed, MessageAttachment } from 'discord.js';
+import { CommandInteraction, CacheType, EmbedBuilder, Attachment } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -24,7 +24,7 @@ export default class extends Command {
     if (quakeInfo.epicenter === '') {
       await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震情報')
             .setDescription(`${quakeInfo.time}頃、最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
             .addField('震源', '調査中')
@@ -41,7 +41,7 @@ export default class extends Command {
 
       await interaction.followUp({
         files: [
-          new MessageAttachment(quakeInfo.detail),
+          new Attachment(quakeInfo.detail),
         ],
       });
 
@@ -49,7 +49,7 @@ export default class extends Command {
         for (const relative of quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${relative.intensity}を観測した場所`)
                 .setDescription(relative.points.join('\n')),
             ],
@@ -60,7 +60,7 @@ export default class extends Command {
         for (const relative in quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                 .setDescription(quakeInfo.relatives[relative].points.join('\n')),
             ],
@@ -71,7 +71,7 @@ export default class extends Command {
     else {
       await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('最新の地震情報')
             .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
             .addField('最大震度', quakeInfo.intensity)
@@ -86,9 +86,9 @@ export default class extends Command {
 
       await interaction.followUp({
         files: [
-          new MessageAttachment(quakeInfo.detail),
-          new MessageAttachment(quakeInfo.local),
-          new MessageAttachment(quakeInfo.global),
+          new Attachment(quakeInfo.detail),
+          new Attachment(quakeInfo.local),
+          new Attachment(quakeInfo.global),
         ],
       });
 
@@ -96,7 +96,7 @@ export default class extends Command {
         for (const relative of quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${relative.intensity}を観測した場所`)
                 .setDescription(relative.points.join('\n')),
             ],
@@ -107,7 +107,7 @@ export default class extends Command {
         for (const relative in quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                 .setDescription(quakeInfo.relatives[relative].points.join('\n')),
             ],

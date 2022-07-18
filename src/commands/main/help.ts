@@ -1,5 +1,5 @@
 import { codeBlock, SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { CommandInteraction, CacheType, Message, ActionRowBuilder, ButtonBuilder, EmbedBuilder } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -23,43 +23,43 @@ export default class extends Command {
   async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
     const commandName = interaction.options.getString('commandname', false);
     if (!commandName) {
-      const embeds: Array<MessageEmbed> = [];
+      const embeds: Array<EmbedBuilder> = [];
       embeds.push(
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(`${client.user?.tag as string} HELP`)
           .setDescription('このBotは緊急地震速報・地震情報をDiscordにテキスト&ボイスでお知らせするBotです。\n全ての情報の正確性は保証されません、自己責任でご利用ください。\n\n開発者: Ken_Cir#0514\n\n音声合成クレジット\nVOICEVOX:四国めたん')
           .addField('メインコマンド', client.commands.filter(x => x.category == 'main').map((x) => '`' + x.name + '`').join(', '))
           .addField('EEWコマンド', client.commands.filter(x => x.category == 'eew').map((x) => '`' + x.name + '`').join(', '))
           .addField('VC読み上げコマンド', client.commands.filter(x => x.category == 'voice').map((x) => '`' + x.name + '`').join(', '))
-          .setColor('RANDOM'),
-        new MessageEmbed()
+
+        new EmbedBuilder()
           .setTitle('メインコマンド')
           .setDescription(codeBlock(client.commands.filter(x => x.category == 'main').map((x) => `/${x.name}: ${x.description}`).join('\n')))
-          .setColor('RANDOM'),
-        new MessageEmbed()
+
+        new EmbedBuilder()
           .setTitle('EEWコマンド')
           .setDescription(codeBlock(client.commands.filter(x => x.category == 'eew').map((x) => `/${x.name}: ${x.description}`).join('\n')))
-          .setColor('RANDOM'),
-        new MessageEmbed()
+
+        new EmbedBuilder()
           .setTitle('VC読み上げコマンド')
           .setDescription(codeBlock(client.commands.filter(x => x.category == 'voice').map((x) => `/${x.name}: ${x.description}`).join('\n')))
-          .setColor('RANDOM'),
+
       );
 
       let select = 0;
-      const buttons = new MessageActionRow()
+      const buttons = new ActionRowBuilder()
         .addComponents(
           [
-            new MessageButton()
+            new ButtonBuilder()
               .setCustomId('left')
               .setLabel('◀️')
               .setStyle('PRIMARY')
               .setDisabled(),
-            new MessageButton()
+            new ButtonBuilder()
               .setCustomId('right')
               .setLabel('▶️')
               .setStyle('PRIMARY'),
-            new MessageButton()
+            new ButtonBuilder()
               .setCustomId('stop')
               .setLabel('⏹️')
               .setStyle('DANGER'),
@@ -121,10 +121,10 @@ export default class extends Command {
       }
       await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle(`コマンド名: ${command.name}の詳細`)
             .setDescription(`コマンド名: ${command.name}\n説明: ${command.description}\n使用法: ${codeBlock(`/${command.name}`)}\nコマンドカテゴリ: ${command.category}`)
-            .setColor('RANDOM'),
+
         ],
       });
     }

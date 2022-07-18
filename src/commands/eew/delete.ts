@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, GuildMember } from 'discord.js';
+import { CommandInteraction, CacheType, Message, ActionRowBuilder, ButtonBuilder, MessageComponentInteraction, EmbedBuilder, GuildMember, CommandInteractionOptionResolver, ButtonStyle, ActionRowData, ActionRowComponentData, MessageActionRowComponentBuilder } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -35,7 +36,7 @@ export default class extends Command {
       return;
     }
 
-    if (interaction.options.getSubcommand() === 'eew') {
+    if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'eew') {
       if (!client.database.getEEWChannel(interaction.channelId)) {
         await interaction.followUp('このチャンネルは登録されていません');
         return;
@@ -43,26 +44,26 @@ export default class extends Command {
 
       const deleteMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('緊急地震速報通知の削除')
             .setDescription('緊急地震速報通知の削除を行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
             ),
         ],
-      }) as Message;
+      }) ;
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseDelete.customId === 'no') {
@@ -81,7 +82,7 @@ export default class extends Command {
         });
       }
     }
-    else if (interaction.options.getSubcommand() === 'quakeinfo') {
+    else if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'quakeinfo') {
       if (!client.database.getQuakeInfoChannel(interaction.channelId)) {
         await interaction.followUp('このチャンネルは登録されていません');
         return;
@@ -89,26 +90,26 @@ export default class extends Command {
 
       const deleteMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知の削除')
             .setDescription('地震通知の削除を行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
             ),
         ],
-      }) as Message;
+      }) ;
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseDelete.customId === 'no') {
@@ -127,7 +128,7 @@ export default class extends Command {
         });
       }
     }
-    else if (interaction.options.getSubcommand() === 'tunami') {
+    else if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'tunami') {
       if (!client.database.getTunamiChannel(interaction.channelId)) {
         await interaction.followUp('このチャンネルは登録されていません');
         return;
@@ -135,26 +136,26 @@ export default class extends Command {
 
       const deleteMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('津波予報通知の削除')
             .setDescription('津波予報通知の削除を行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
-                .setStyle('PRIMARY'),
-              new MessageButton()
+                .setStyle(ButtonStyle.Primary),
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
-                .setStyle('PRIMARY'),
-            ),
+                .setStyle(ButtonStyle.Primary),
+            ) as unknown as ActionRowData<MessageActionRowComponentBuilder>,
         ],
-      }) as Message;
+      });
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseDelete.customId === 'no') {
