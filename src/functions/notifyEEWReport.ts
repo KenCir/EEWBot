@@ -1,5 +1,5 @@
 import { codeBlock, roleMention } from '@discordjs/builders';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
+import { Attachment, EmbedBuilder, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { EEWReportData } from '../interfaces/EEWReportData';
 import axios from 'axios';
@@ -83,7 +83,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? `緊急地震速報\n${codeBlock(diff)}` : `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}\n${codeBlock(diff)}`,
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -97,7 +97,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }
@@ -105,7 +105,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? '緊急地震速報' : eewChannelData.mention_roles.map(role => roleMention(role)).join(''),
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -119,7 +119,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }
@@ -130,7 +130,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? `緊急地震速報\n${codeBlock(diff)}` : `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}\n${codeBlock(diff)}`,
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -144,7 +144,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }
@@ -152,7 +152,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? '緊急地震速報' : eewChannelData.mention_roles.map(role => roleMention(role)).join(''),
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -166,7 +166,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }
@@ -178,7 +178,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? `緊急地震速報\n${codeBlock(diff)}` : `${eewChannelData.mention_roles.map(role => roleMention(role)).join('')}\n${codeBlock(diff)}`,
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -192,7 +192,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }
@@ -200,7 +200,7 @@ export default async (client: EEWBot) => {
             await eewChannel.send({
               content: eewChannelData.mention_roles.length < 1 || notifyChannels.includes(eewChannelData.channel_id) ? '緊急地震速報' : eewChannelData.mention_roles.map(role => roleMention(role)).join(''),
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
                   .addField('震央', eewData.region_name, true)
                   .addField('深さ', eewData.depth, true)
@@ -214,7 +214,7 @@ export default async (client: EEWBot) => {
                   .setTimestamp(),
               ],
               files: [
-                new MessageAttachment('dat/nowMonitor.png'),
+                new Attachment('dat/nowMonitor.png'),
               ],
             });
           }

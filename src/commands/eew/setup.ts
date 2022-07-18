@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageEmbed, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageSelectMenu, GuildMember } from 'discord.js';
+import { CommandInteraction, CacheType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Message, MessageComponentInteraction, SelectMenuBuilder, GuildMember } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityStringToNumber, intensityNumberToString } from '../../utils/IntensityUtil';
@@ -45,26 +45,26 @@ export default class extends Command {
 
       const setupMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('緊急地震速報通知のセットアップ')
             .setDescription('緊急地震速報通知のセットアップを行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
             ),
         ],
-      }) as Message;
+      }) ;
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseSetup.customId === 'no') {
@@ -78,16 +78,16 @@ export default class extends Command {
 
       await responseSetup.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('緊急地震速報通知のセットアップ')
             .setDescription('通知する最小震度を選択してください')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('intensitySelect')
                 .setOptions([
                   {
@@ -137,11 +137,11 @@ export default class extends Command {
       client.database.addEEWChannel(interaction.channelId, intensity, []);
       await responseIntensity.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('緊急地震速報通知セットアップ完了')
             .setDescription('緊急地震速報通知セットアップが完了しました')
-            .addField('通知最小震度', intensityNumberToString(intensity))
-            .setColor('RANDOM'),
+            .addField('通知最小震度', intensityNumberToString(intensity)),
+
         ],
         components: [],
       });
@@ -154,26 +154,26 @@ export default class extends Command {
 
       const setupMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知のセットアップ')
             .setDescription('地震通知のセットアップを行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
             ),
         ],
-      }) as Message;
+      }) ;
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseSetup.customId === 'no') {
@@ -187,16 +187,16 @@ export default class extends Command {
 
       await responseSetup.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知のセットアップ')
             .setDescription('通知する最小震度を選択してください')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('intensitySelect')
                 .setOptions([
                   {
@@ -245,20 +245,20 @@ export default class extends Command {
 
       await responseIntensity.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知のセットアップ')
             .setDescription('通知時に震度マップを送信しますか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
@@ -272,20 +272,20 @@ export default class extends Command {
 
       await responseImage.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知のセットアップ')
             .setDescription('通知時に各地の震度情報を送信しますか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
@@ -300,7 +300,7 @@ export default class extends Command {
       client.database.addQuakeInfoChannel(interaction.channelId, intensity, [], image, relative);
       await responseRelative.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震通知セットアップ完了')
             .setDescription('地震通知セットアップが完了しました')
             .addField('通知最小震度', intensityNumberToString(intensity))
@@ -318,26 +318,26 @@ export default class extends Command {
 
       const setupMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('津波予報通知のセットアップ')
             .setDescription('津波予報通知のセットアップを行います、よろしいですか？')
-            .setFooter({ text: '60秒以内に選択してください' })
-            .setColor('RANDOM'),
+            .setFooter({ text: '60秒以内に選択してください' }),
+
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
                 .setStyle('PRIMARY'),
-              new MessageButton()
+              new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
                 .setStyle('PRIMARY'),
             ),
         ],
-      }) as Message;
+      }) ;
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
       const responseSetup = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
       if (responseSetup.customId === 'no') {
@@ -352,7 +352,7 @@ export default class extends Command {
       client.database.addTunamiChannel(interaction.channelId);
       await responseSetup.update({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('津波予報通知セットアップ完了')
             .setDescription('津波予報通知セットアップが完了しました'),
         ],

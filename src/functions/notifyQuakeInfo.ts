@@ -1,5 +1,5 @@
 import { roleMention } from '@discordjs/builders';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
+import { Attachment, EmbedBuilder, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
@@ -27,7 +27,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         await quakeInfoChannel.send({
           content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震情報')
               .setDescription(`${quakeInfo.time}頃、最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
               .addField('震源', '調査中')
@@ -45,7 +45,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         if (quakeInfoChannelData.image === 1) {
           await quakeInfoChannel.send({
             files: [
-              new MessageAttachment(quakeInfo.detail),
+              new Attachment(quakeInfo.detail),
             ],
           });
         }
@@ -55,7 +55,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
             for (const relative of quakeInfo.relatives) {
               await quakeInfoChannel.send({
                 embeds: [
-                  new MessageEmbed()
+                  new EmbedBuilder()
                     .setTitle(`震度${relative.intensity}を観測した場所`)
                     .setDescription(relative.points.join('\n')),
                 ],
@@ -66,7 +66,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
             for (const relative in quakeInfo.relatives) {
               await quakeInfoChannel.send({
                 embeds: [
-                  new MessageEmbed()
+                  new EmbedBuilder()
                     .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                     .setDescription(quakeInfo.relatives[relative].points.join('\n')),
                 ],
@@ -107,7 +107,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       await quakeInfoChannel.send({
         content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震情報')
             .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
             .addField('震源', quakeInfo.epicenter)
@@ -125,9 +125,9 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       if (quakeInfoChannelData.image === 1) {
         await quakeInfoChannel.send({
           files: [
-            new MessageAttachment(quakeInfo.detail),
-            new MessageAttachment(quakeInfo.local),
-            new MessageAttachment(quakeInfo.global),
+            new Attachment(quakeInfo.detail),
+            new Attachment(quakeInfo.local),
+            new Attachment(quakeInfo.global),
           ],
         });
       }
@@ -137,7 +137,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
           for (const relative of quakeInfo.relatives) {
             await quakeInfoChannel.send({
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`震度${relative.intensity}を観測した場所`)
                   .setDescription(relative.points.join('\n')),
               ],
@@ -148,7 +148,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
           for (const relative in quakeInfo.relatives) {
             await quakeInfoChannel.send({
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                   .setDescription(quakeInfo.relatives[relative].points.join('\n')),

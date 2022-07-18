@@ -14,7 +14,7 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction): Promise<void> {
-    const msg: Message = await interaction.followUp('Pong!') as Message;
+    const msg: Message = await interaction.followUp('Pong!') ;
     await interaction.editReply(`APIPing: ${msg.createdTimestamp - interaction.createdTimestamp}ms\nWebSocketPing: ${client.ws.ping}ms\nメモリ使用率: ${Math.round(process.memoryUsage().rss / 1024 / 1024 * 100) / 100}MB`);
   }
 }

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, GuildMember, MessageActionRow, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, Message } from 'discord.js';
+import { CommandInteraction, CacheType, GuildMember, ActionRowBuilder, MessageComponentInteraction, EmbedBuilder, SelectMenuBuilder, Message } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityStringToNumber, intensityNumberToString } from '../../utils/IntensityUtil';
@@ -36,16 +36,16 @@ export default class extends Command {
       if (!setting) {
         const setupMsg: Message = await interaction.followUp({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('VC読み上げ、緊急地震速報通知設定')
               .setDescription('通知する最小震度を選択してください')
-              .setFooter({ text: '60秒以内に選択してください' })
-              .setColor('RANDOM'),
+              .setFooter({ text: '60秒以内に選択してください' }),
+
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -87,7 +87,7 @@ export default class extends Command {
                   ]),
               ),
           ],
-        }) as Message;
+        }) ;
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
         const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
@@ -95,11 +95,11 @@ export default class extends Command {
         client.database.addVoiceEEWSetting(interaction.guildId as string, intensity);
         await responseIntensity.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('VC読み上げ、緊急地震速報通知設定、セットアップ完了')
               .setDescription('VC読み上げ、緊急地震速報通知設定セットアップが完了しました')
-              .addField('通知最小震度', intensityNumberToString(intensity))
-              .setColor('RANDOM'),
+              .addField('通知最小震度', intensityNumberToString(intensity)),
+
           ],
           components: [],
         });
@@ -107,15 +107,15 @@ export default class extends Command {
       else {
         const editMsg: Message = await interaction.followUp({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('設定を編集する項目を選択してください')
               .addField('設定項目名', '現在の設定')
               .addField('最小地震', intensityNumberToString(setting.min_intensity)),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('editSelect')
                   .setOptions([
                     {
@@ -125,22 +125,22 @@ export default class extends Command {
                   ]),
               ),
           ],
-        }) as Message;
+        }) ;
         const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
         const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
         if (responseEdit.values[0] === 'intensity') {
           await responseEdit.update({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle('緊急地震速報読み上げの編集')
                 .setDescription('通知する最小震度を選択してください')
-                .setFooter({ text: '60秒以内に選択してください' })
-                .setColor('RANDOM'),
+                .setFooter({ text: '60秒以内に選択してください' }),
+
             ],
             components: [
-              new MessageActionRow()
+              new ActionRowBuilder()
                 .addComponents(
-                  new MessageSelectMenu()
+                  new SelectMenuBuilder()
                     .setCustomId('intensitySelect')
                     .setOptions([
                       {
@@ -200,16 +200,16 @@ export default class extends Command {
       if (!setting) {
         const setupMsg: Message = await interaction.followUp({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('VC読み上げ、地震情報通知設定')
               .setDescription('通知する最小震度を選択してください')
-              .setFooter({ text: '60秒以内に選択してください' })
-              .setColor('RANDOM'),
+              .setFooter({ text: '60秒以内に選択してください' }),
+
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -251,7 +251,7 @@ export default class extends Command {
                   ]),
               ),
           ],
-        }) as Message;
+        }) ;
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
         const responseIntensity = await setupMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
@@ -259,11 +259,11 @@ export default class extends Command {
         client.database.addVoiceQuakeInfoSetting(interaction.guildId as string, intensity);
         await responseIntensity.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('VC読み上げ、地震通知設定、セットアップ完了')
               .setDescription('VC読み上げ、地震速報設定セットアップが完了しました')
-              .addField('通知最小震度', intensityNumberToString(intensity))
-              .setColor('RANDOM'),
+              .addField('通知最小震度', intensityNumberToString(intensity)),
+
           ],
           components: [],
         });
@@ -271,15 +271,15 @@ export default class extends Command {
       else {
         const editMsg: Message = await interaction.followUp({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('設定を編集する項目を選択してください')
               .addField('設定項目名', '現在の設定')
               .addField('最小地震', intensityNumberToString(setting.min_intensity)),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('editSelect')
                   .setOptions([
                     {
@@ -289,22 +289,22 @@ export default class extends Command {
                   ]),
               ),
           ],
-        }) as Message;
+        }) ;
         const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
         const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
         if (responseEdit.values[0] === 'intensity') {
           await responseEdit.update({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle('地震通知読み上げの編集')
                 .setDescription('通知する最小震度を選択してください')
-                .setFooter({ text: '60秒以内に選択してください' })
-                .setColor('RANDOM'),
+                .setFooter({ text: '60秒以内に選択してください' }),
+
             ],
             components: [
-              new MessageActionRow()
+              new ActionRowBuilder()
                 .addComponents(
-                  new MessageSelectMenu()
+                  new SelectMenuBuilder()
                     .setCustomId('intensitySelect')
                     .setOptions([
                       {
