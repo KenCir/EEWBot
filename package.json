@@ -19,7 +19,7 @@
   "author": "Ken_Cir",
   "license": "MIT",
   "engines": {
-    "node": "16.13.0"
+    "node": "16.16.0"
   },
   "devDependencies": {
     "@discordjs/rest": "^1.0.0",
