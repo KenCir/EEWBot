@@ -1,5 +1,5 @@
 import { codeBlock, roleMention } from '@discordjs/builders';
-import { Attachment, EmbedBuilder, TextChannel } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { EEWReportData } from '../interfaces/EEWReportData';
 import axios from 'axios';
@@ -85,19 +85,21 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('AQUA')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Aqua')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }
@@ -107,19 +109,21 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('AQUA')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Aqua')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }
@@ -132,19 +136,21 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('YELLOW')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Yellow')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }
@@ -154,19 +160,21 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('YELLOW')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Yellow')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }
@@ -180,19 +188,21 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('RED')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Red')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }
@@ -202,19 +212,22 @@ export default async (client: EEWBot) => {
               embeds: [
                 new EmbedBuilder()
                   .setTitle(`緊急地震速報(${eewData.alertflg}) 第${eewData.is_final ? '最終' : eewData.report_num}報`)
-                  .addField('震央', eewData.region_name, true)
-                  .addField('深さ', eewData.depth, true)
-                  .addField('マグニチュード', eewData.magunitude, true)
-                  .addField('予想震度', eewData.calcintensity, true)
-                  .addField('緯度', eewData.latitude, true)
-                  .addField('経度', eewData.longitude, true)
-                  .setColor('RED')
+                  .addFields([
+                    { name: '震央', value: eewData.region_name, inline: true },
+                    { name: '予想震度', value: eewData.calcintensity, inline: true },
+                    { name: '深さ', value: eewData.depth, inline: true },
+                    { name: 'マグニチュード', value: eewData.magunitude, inline: true },
+                    { name: '緯度', value: eewData.latitude, inline: true },
+                    { name: '経度', value: eewData.longitude, inline: true },
+                  ])
+                  .setColor('Aqua')
+                  .setColor('Red')
                   .setImage('attachment://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
               files: [
-                new Attachment('dat/nowMonitor.png'),
+                new AttachmentBuilder('dat/nowMonitor.png'),
               ],
             });
           }

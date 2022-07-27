@@ -10,7 +10,7 @@ export default async (client: EEWBot, info: string) => {
   const webhook = new WebhookClient({ url: process.env.DEBUGLOG_WEBHOOK_URL as string });
   await webhook.send({
     content: `${codeBlock(info)}`,
-    avatarURL: client.user.avatarURL({ format: 'webp' }) as string,
+    avatarURL: client.user.avatarURL({ extension: 'webp' }) as string,
     username: `${client.user.username}-デバッグログ`,
   });
 };

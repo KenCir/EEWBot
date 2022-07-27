@@ -94,7 +94,7 @@ export default class VOICEVOXClient {
   private play(speaker: Speaker): void {
     if (speaker.queue.length < 1) return;
 
-    const resource = createAudioResource(`dat/voices/${speaker.queue.shift() as string}.wav`);
+    const resource = createAudioResource(`dat/voices/${(speaker.queue.shift() as bigint).toString()}.wav`);
     speaker.player.play(resource);
     speaker.connection.subscribe(speaker.player);
   }

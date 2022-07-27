@@ -1,13 +1,13 @@
 import { VoiceConnection, AudioPlayer } from '@discordjs/voice';
 
 export interface Speaker {
-    guildId: string;
+  guildId: string;
 
-    channelId: string;
+  channelId: string;
 
-    connection: VoiceConnection;
+  connection: VoiceConnection;
 
-    queue: Array<string>;
+  queue: Array<bigint>;
 
-    player: AudioPlayer;
+  player: AudioPlayer;
 }
