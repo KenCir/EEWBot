@@ -23,7 +23,7 @@
     "node": "16.16.0"
   },
   "devDependencies": {
-    "@discordjs/rest": "^1.0.0",
+    "@discordjs/rest": "^1.0.1",
     "@types/better-sqlite3": "^7.5.0",
     "@types/express": "^4.17.13",
     "@types/morgan": "^1.9.3",
