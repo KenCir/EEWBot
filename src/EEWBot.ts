@@ -48,7 +48,5 @@ export default class EEWBot extends Client {
     this.destroy();
     this.database.shutdown();
     shutdown();
-
-    process.exit();
   }
 }

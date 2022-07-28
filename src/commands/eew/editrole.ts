@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, GuildMember, Role } from 'discord.js';
+import { CommandInteraction, CommandInteractionOptionResolver, GuildMember, PermissionFlagsBits, Role } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -35,13 +35,13 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction): Promise<void> {
-    if (!(interaction.member as GuildMember).permissions.has('ADMINISTRATOR') && !(interaction.member as GuildMember).permissions.has('MANAGE_CHANNELS')) {
+    if (!(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.Administrator) && !(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.ManageChannels)) {
       await interaction.followUp('このコマンドは管理者権限かチャンネルを管理権限を持っている人のみ使用可能です');
       return;
     }
 
-    const role = interaction.options.getRole('role', true) as Role;
-    if (interaction.options.getSubcommand() === 'eew') {
+    const role = (interaction.options as CommandInteractionOptionResolver).getRole('role') as Role;
+    if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'eew') {
       const eewNotifyData = client.database.getEEWChannel(interaction.channelId);
       if (!eewNotifyData) {
         await interaction.followUp('このチャンネルは登録されていません');
@@ -59,7 +59,7 @@ export default class extends Command {
         await interaction.followUp(`${role.name}を緊急地震速報通知ロールに追加しました`);
       }
     }
-    else if (interaction.options.getSubcommand() === 'quakeinfo') {
+    else if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'quakeinfo') {
       const quakeInfoNotifyData = client.database.getQuakeInfoChannel(interaction.channelId);
       if (!quakeInfoNotifyData) {
         await interaction.followUp('このチャンネルは登録されていません');

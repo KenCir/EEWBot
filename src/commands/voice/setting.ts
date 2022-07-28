@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, GuildMember, ActionRowBuilder, MessageComponentInteraction, EmbedBuilder, SelectMenuBuilder, Message, CommandInteractionOptionResolver, PermissionsBitField, ComponentType } from 'discord.js';
+import { CommandInteraction, CacheType, GuildMember, ActionRowBuilder, MessageComponentInteraction, EmbedBuilder, SelectMenuBuilder, Message, CommandInteractionOptionResolver, ComponentType, PermissionFlagsBits } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityStringToNumber, intensityNumberToString } from '../../utils/IntensityUtil';
@@ -26,7 +26,7 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
-    if (!(interaction.member as GuildMember).permissions.has(PermissionsBitField.Flags.Administrator) && !(interaction.member as GuildMember).permissions.has(PermissionsBitField.Flags.MoveMembers)) {
+    if (!(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.Administrator) && !(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.MoveMembers)) {
       await interaction.followUp('このコマンドは管理者権限かメンバーを移動権限を持っている人のみ使用可能です');
       return;
     }

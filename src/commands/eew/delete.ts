@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, Message, ActionRowBuilder, ButtonBuilder, MessageComponentInteraction, EmbedBuilder, GuildMember, CommandInteractionOptionResolver, ButtonStyle, ActionRowData, ActionRowComponentData, MessageActionRowComponentBuilder } from 'discord.js';
+import { CommandInteraction, CacheType, Message, ActionRowBuilder, ButtonBuilder, MessageComponentInteraction, EmbedBuilder, GuildMember, CommandInteractionOptionResolver, ButtonStyle, ActionRowData, MessageActionRowComponentBuilder, ComponentType, PermissionFlagsBits } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -31,7 +32,7 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
-    if (!(interaction.member as GuildMember).permissions.has('ADMINISTRATOR') && !(interaction.member as GuildMember).permissions.has('MANAGE_CHANNELS')) {
+    if (!(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.Administrator) && !(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.ManageChannels)) {
       await interaction.followUp('このコマンドは管理者権限かチャンネルを管理権限を持っている人のみ使用可能です');
       return;
     }
@@ -56,16 +57,16 @@ export default class extends Command {
               new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
-                .setStyle('PRIMARY'),
+                .setStyle(ButtonStyle.Primary),
               new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
-                .setStyle('PRIMARY'),
-            ),
+                .setStyle(ButtonStyle.Primary),
+            ) as any,
         ],
-      }) ;
+      });
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.Button, filter: filter });
       if (responseDelete.customId === 'no') {
         await responseDelete.update({
           content: '緊急地震速報通知削除をキャンセルしました',
@@ -102,16 +103,16 @@ export default class extends Command {
               new ButtonBuilder()
                 .setCustomId('ok')
                 .setEmoji('✅')
-                .setStyle('PRIMARY'),
+                .setStyle(ButtonStyle.Primary),
               new ButtonBuilder()
                 .setCustomId('no')
                 .setEmoji('❌')
-                .setStyle('PRIMARY'),
-            ),
+                .setStyle(ButtonStyle.Primary),
+            ) as any,
         ],
-      }) ;
+      });
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.Button, filter: filter });
       if (responseDelete.customId === 'no') {
         await responseDelete.update({
           content: '地震通知削除をキャンセルしました',
@@ -120,7 +121,7 @@ export default class extends Command {
         });
       }
       else if (responseDelete.customId === 'ok') {
-        client.database.removeEEWChannel(interaction.channelId);
+        client.database.removeQuakeInfoChannel(interaction.channelId);
         await responseDelete.update({
           content: 'このチャンネルの地震通知を削除しました',
           embeds: [],
@@ -157,7 +158,7 @@ export default class extends Command {
         ],
       });
       const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+      const responseDelete = await deleteMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.Button, filter: filter });
       if (responseDelete.customId === 'no') {
         await responseDelete.update({
           content: '津波予報通知削除をキャンセルしました',

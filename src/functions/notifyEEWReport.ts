@@ -94,7 +94,7 @@ export default async (client: EEWBot) => {
                     { name: '経度', value: eewData.longitude, inline: true },
                   ])
                   .setColor('Aqua')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
@@ -118,7 +118,7 @@ export default async (client: EEWBot) => {
                     { name: '経度', value: eewData.longitude, inline: true },
                   ])
                   .setColor('Aqua')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
@@ -145,7 +145,7 @@ export default async (client: EEWBot) => {
                     { name: '経度', value: eewData.longitude, inline: true },
                   ])
                   .setColor('Yellow')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
@@ -169,7 +169,7 @@ export default async (client: EEWBot) => {
                     { name: '経度', value: eewData.longitude, inline: true },
                   ])
                   .setColor('Yellow')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
@@ -197,7 +197,7 @@ export default async (client: EEWBot) => {
                     { name: '経度', value: eewData.longitude, inline: true },
                   ])
                   .setColor('Red')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
@@ -222,7 +222,7 @@ export default async (client: EEWBot) => {
                   ])
                   .setColor('Aqua')
                   .setColor('Red')
-                  .setImage('attachment://nowMonitor.png')
+                  .setImage('AttachmentBuilder://nowMonitor.png')
                   .setFooter({ text: '強震モニタより' })
                   .setTimestamp(),
               ],
