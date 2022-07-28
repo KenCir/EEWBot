@@ -12,7 +12,7 @@ export default async (client: EEWBot, error: Error) => {
   const webhook = new WebhookClient({ url: process.env.ERRORLOG_WEBHOOK_URL as string });
   await webhook.send({
     content: `${codeBlock(error.stack as string)}`,
-    avatarURL: client.user.avatarURL({ format: 'webp' }) as string,
+    avatarURL: client.user.avatarURL({ extension: 'webp' }) as string,
     username: `${client.user.username}-エラーログ`,
   });
 };

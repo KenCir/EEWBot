@@ -1,4 +1,4 @@
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { getLogger, configure, shutdown, Logger } from 'log4js';
 import { Command } from './interfaces/Command';
 import Database from './database/Database';
@@ -15,9 +15,9 @@ export default class EEWBot extends Client {
   public constructor() {
     super({
       intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_INTEGRATIONS,
-        Intents.FLAGS.GUILD_VOICE_STATES,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildVoiceStates,
       ],
       allowedMentions: {
         parse: ['roles'],
@@ -48,7 +48,5 @@ export default class EEWBot extends Client {
     this.destroy();
     this.database.shutdown();
     shutdown();
-
-    process.exit();
   }
 }

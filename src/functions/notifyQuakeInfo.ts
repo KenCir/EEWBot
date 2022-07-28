@@ -1,5 +1,5 @@
 import { roleMention } from '@discordjs/builders';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { QuakeInfoData } from '../interfaces/QuakeInfoData';
 import { intensityStringToNumber } from '../utils/IntensityUtil';
@@ -27,16 +27,18 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         await quakeInfoChannel.send({
           content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震情報')
               .setDescription(`${quakeInfo.time}頃、最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
-              .addField('震源', '調査中')
-              .addField('最大震度', quakeInfo.intensity)
-              .addField('発生時刻', `${quakeInfo.time}頃`)
-              .addField('震源の深さ', '調査中')
-              .addField('マグニチュード', '調査中')
-              .addField('北緯', '調査中')
-              .addField('東経', '調査中')
+              .addFields([
+                { name: '震源', value: '調査中' },
+                { name: '最大震度', value: quakeInfo.intensity },
+                { name: '発生時刻', value: `${quakeInfo.time}頃` },
+                { name: '震源の深さ', value: '調査中' },
+                { name: 'マグニチュード', value: '調査中' },
+                { name: '北緯', value: '調査中' },
+                { name: '東経', value: '調査中' },
+              ])
               .setFooter({ text: 'NHK地震情報' })
               .setTimestamp(),
           ],
@@ -45,7 +47,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
         if (quakeInfoChannelData.image === 1) {
           await quakeInfoChannel.send({
             files: [
-              new MessageAttachment(quakeInfo.detail),
+              new AttachmentBuilder(quakeInfo.detail),
             ],
           });
         }
@@ -55,7 +57,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
             for (const relative of quakeInfo.relatives) {
               await quakeInfoChannel.send({
                 embeds: [
-                  new MessageEmbed()
+                  new EmbedBuilder()
                     .setTitle(`震度${relative.intensity}を観測した場所`)
                     .setDescription(relative.points.join('\n')),
                 ],
@@ -66,7 +68,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
             for (const relative in quakeInfo.relatives) {
               await quakeInfoChannel.send({
                 embeds: [
-                  new MessageEmbed()
+                  new EmbedBuilder()
                     .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                     .setDescription(quakeInfo.relatives[relative].points.join('\n')),
                 ],
@@ -107,16 +109,18 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       await quakeInfoChannel.send({
         content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('地震情報')
             .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
-            .addField('震源', quakeInfo.epicenter)
-            .addField('最大震度', quakeInfo.intensity)
-            .addField('発生時刻', `${quakeInfo.time}頃`)
-            .addField('震源の深さ', quakeInfo.depth)
-            .addField('マグニチュード', quakeInfo.magnitude)
-            .addField('北緯', quakeInfo.latitudey)
-            .addField('東経', quakeInfo.longitude)
+            .addFields([
+              { name: '震源', value: quakeInfo.epicenter },
+              { name: '最大震度', value: quakeInfo.intensity },
+              { name: '発生時刻', value: `${quakeInfo.time}頃` },
+              { name: '震源の深さ', value: quakeInfo.depth },
+              { name: 'マグニチュード', value: quakeInfo.magnitude },
+              { name: '北緯', value: quakeInfo.latitudey },
+              { name: '東経', value: quakeInfo.longitude },
+            ])
             .setFooter({ text: 'NHK地震情報' })
             .setTimestamp(),
         ],
@@ -125,9 +129,9 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
       if (quakeInfoChannelData.image === 1) {
         await quakeInfoChannel.send({
           files: [
-            new MessageAttachment(quakeInfo.detail),
-            new MessageAttachment(quakeInfo.local),
-            new MessageAttachment(quakeInfo.global),
+            new AttachmentBuilder(quakeInfo.detail),
+            new AttachmentBuilder(quakeInfo.local),
+            new AttachmentBuilder(quakeInfo.global),
           ],
         });
       }
@@ -137,7 +141,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
           for (const relative of quakeInfo.relatives) {
             await quakeInfoChannel.send({
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   .setTitle(`震度${relative.intensity}を観測した場所`)
                   .setDescription(relative.points.join('\n')),
               ],
@@ -148,7 +152,7 @@ export default (client: EEWBot, quakeInfo: QuakeInfoData) => {
           for (const relative in quakeInfo.relatives) {
             await quakeInfoChannel.send({
               embeds: [
-                new MessageEmbed()
+                new EmbedBuilder()
                   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                   .setDescription(quakeInfo.relatives[relative].points.join('\n')),

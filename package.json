@@ -13,13 +13,14 @@
     "eslint": "eslint src/",
     "eslint:fix": "eslint src/ --fix",
     "lint": "npm-run-all eslint check-types",
-    "registerSlashCommand": "ts-node src/utils/registerSlashCommands.ts"
+    "registerSlashCommandDebug": "ts-node src/utils/registerSlashCommandDebug.ts",
+    "registerSlashCommand": "ts-node src/utils/registerSlashCommand.ts"
   },
   "keywords": [],
   "author": "Ken_Cir",
   "license": "MIT",
   "engines": {
-    "node": "16.13.0"
+    "node": "16.16.0"
   },
   "devDependencies": {
     "@discordjs/rest": "^1.0.0",
@@ -37,20 +38,19 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "@discordjs/builders": "^1.0.0",
-    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
     "axios": "^0.27.2",
     "better-sqlite3": "^7.6.2",
     "bufferutil": "^4.0.6",
-    "discord.js": "^13.8.1",
+    "discord.js": "^14.0.2",
     "dotenv": "^16.0.1",
     "erlpack": "github:discord/erlpack",
     "express": "^4.18.1",
-    "jimp": "^0.16.1",
+    "jimp": "^0.16.0",
     "log4js": "^6.6.0",
     "morgan": "^1.10.0",
     "ts-node": "^10.9.1",
+    "tweetnacl": "^1.0.3",
     "typescript": "^4.7.3",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"

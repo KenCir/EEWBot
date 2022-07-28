@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageActionRow, MessageButton, Message, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, GuildMember } from 'discord.js';
+import { CommandInteraction, CacheType, ActionRowBuilder, ButtonBuilder, Message, MessageComponentInteraction, EmbedBuilder, SelectMenuBuilder, GuildMember, PermissionFlagsBits, CommandInteractionOptionResolver, ComponentType, ButtonStyle } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 import { intensityNumberToString, intensityStringToNumber } from '../../utils/IntensityUtil';
@@ -26,12 +27,12 @@ export default class extends Command {
   }
 
   public async run(client: EEWBot, interaction: CommandInteraction<CacheType>): Promise<void> {
-    if (!(interaction.member as GuildMember).permissions.has('ADMINISTRATOR') && !(interaction.member as GuildMember).permissions.has('MANAGE_CHANNELS')) {
+    if (!(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.Administrator) && !(interaction.member as GuildMember).permissions.has(PermissionFlagsBits.ManageChannels)) {
       await interaction.followUp('このコマンドは管理者権限かチャンネルを管理権限を持っている人のみ使用可能です');
       return;
     }
 
-    if (interaction.options.getSubcommand() === 'eew') {
+    if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'eew') {
       const eewNotifyData = client.database.getEEWChannel(interaction.channelId);
       if (!eewNotifyData) {
         await interaction.followUp('このチャンネルは登録されていません');
@@ -40,15 +41,17 @@ export default class extends Command {
 
       const editMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('設定を編集する項目を選択してください')
-            .addField('設定項目名', '現在の設定')
-            .addField('最小地震', intensityNumberToString(eewNotifyData.min_intensity)),
+            .addFields([
+              { name: '設定項目名', value: '現在の設定' },
+              { name: '最小地震', value: intensityNumberToString(eewNotifyData.min_intensity) },
+            ]),
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('editSelect')
                 .setOptions([
                   {
@@ -56,24 +59,24 @@ export default class extends Command {
                     value: 'intensity',
                   },
                 ]),
-            ),
+            ) as any,
         ],
-      }) as Message;
+      });
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
-      const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
+      const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.SelectMenu, filter: editFilter });
       if (responseEdit.values[0] === 'intensity') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('緊急地震速報通知の編集')
               .setDescription('通知する最小震度を選択してください')
-              .setFooter({ text: '60秒以内に選択してください' })
-              .setColor('RANDOM'),
+              .setFooter({ text: '60秒以内に選択してください' }),
+
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -113,11 +116,11 @@ export default class extends Command {
                       value: '7',
                     },
                   ]),
-              ),
+              ) as any,
           ],
         });
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
-        const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
+        const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.SelectMenu, filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
         client.database.editEEWChannel(eewNotifyData.channel_id, intensity, eewNotifyData.mention_roles);
         await responseIntensity.update({
@@ -127,7 +130,7 @@ export default class extends Command {
         });
       }
     }
-    else if (interaction.options.getSubcommand() === 'quakeinfo') {
+    else if ((interaction.options as CommandInteractionOptionResolver).getSubcommand() === 'quakeinfo') {
       const quakeInfoNotifyData = client.database.getQuakeInfoChannel(interaction.channelId);
       if (!quakeInfoNotifyData) {
         await interaction.followUp('このチャンネルは登録されていません');
@@ -136,17 +139,19 @@ export default class extends Command {
 
       const editMsg: Message = await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('設定を編集する項目を選択してください')
-            .addField('設定項目名', '現在の設定')
-            .addField('最小地震', intensityNumberToString(quakeInfoNotifyData.min_intensity))
-            .addField('通知時に震度マップを送信', quakeInfoNotifyData.image === 0 ? 'しない' : 'する')
-            .addField('通知時に各地の震度情報を送信', quakeInfoNotifyData.relative === 0 ? 'しない' : 'する'),
+            .addFields([
+              { name: '設定項目名', value: '現在の設定' },
+              { name: '最小震度', value: intensityNumberToString(quakeInfoNotifyData.min_intensity) },
+              { name: '通知時に震度マップを送信', value: quakeInfoNotifyData.image === 0 ? 'しない' : 'する' },
+              { name: '通知時に各地の震度情報を送信', value: quakeInfoNotifyData.relative === 0 ? 'しない' : 'する' },
+            ]),
         ],
         components: [
-          new MessageActionRow()
+          new ActionRowBuilder()
             .addComponents(
-              new MessageSelectMenu()
+              new SelectMenuBuilder()
                 .setCustomId('editSelect')
                 .setOptions([
                   {
@@ -162,23 +167,23 @@ export default class extends Command {
                     value: '通知時に各地の震度情報を送信',
                   },
                 ]),
-            ),
+            ) as any,
         ],
-      }) as Message;
+      });
       const editFilter = (i: MessageComponentInteraction) => (i.customId === 'editSelect') && i.user.id === interaction.user.id;
-      const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: editFilter });
+      const responseEdit = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.SelectMenu, filter: editFilter });
       if (responseEdit.values[0] === '最小震度') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知する最小震度を選択してください')
               .setFooter({ text: '60秒以内に選択してください' }),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageSelectMenu()
+                new SelectMenuBuilder()
                   .setCustomId('intensitySelect')
                   .setOptions([
                     {
@@ -218,11 +223,11 @@ export default class extends Command {
                       value: '7',
                     },
                   ]),
-              ),
+              ) as any,
           ],
         });
         const intensityFilter = (i: MessageComponentInteraction) => (i.customId === 'intensitySelect') && i.user.id === interaction.user.id;
-        const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'SELECT_MENU', filter: intensityFilter });
+        const responseIntensity = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.SelectMenu, filter: intensityFilter });
         const intensity: number = intensityStringToNumber(responseIntensity.values.shift() as string);
         client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, quakeInfoNotifyData.relative);
         await responseIntensity.update({
@@ -234,27 +239,27 @@ export default class extends Command {
       else if (responseEdit.values[0] === '通知時に震度マップを送信') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知時に震度マップを送信しますか？'),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('ok')
                   .setEmoji('✅')
-                  .setStyle('PRIMARY'),
-                new MessageButton()
+                  .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
                   .setCustomId('no')
                   .setEmoji('❌')
-                  .setStyle('PRIMARY'),
-              ),
+                  .setStyle(ButtonStyle.Primary),
+              ) as any,
           ],
         });
 
         const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-        const responseImage = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+        const responseImage = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.Button, filter: filter });
         if (responseImage.customId === 'ok') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, 1, quakeInfoNotifyData.relative);
           await responseImage.update({
@@ -275,27 +280,27 @@ export default class extends Command {
       else if (responseEdit.values[0] === '通知時に各地の震度情報を送信') {
         await responseEdit.update({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setTitle('地震通知の編集')
               .setDescription('通知時に各地の震度情報を送信しますか？'),
           ],
           components: [
-            new MessageActionRow()
+            new ActionRowBuilder()
               .addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                   .setCustomId('ok')
                   .setEmoji('✅')
-                  .setStyle('PRIMARY'),
-                new MessageButton()
+                  .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
                   .setCustomId('no')
                   .setEmoji('❌')
-                  .setStyle('PRIMARY'),
-              ),
+                  .setStyle(ButtonStyle.Primary),
+              ) as any,
           ],
         });
 
         const filter = (i: MessageComponentInteraction) => (i.customId === 'ok' || i.customId === 'no') && i.user.id === interaction.user.id;
-        const responseRelative = await editMsg.awaitMessageComponent({ time: 60000, componentType: 'BUTTON', filter: filter });
+        const responseRelative = await editMsg.awaitMessageComponent({ time: 60000, componentType: ComponentType.Button, filter: filter });
         if (responseRelative.customId === 'ok') {
           client.database.editQuakeInfoChannel(quakeInfoNotifyData.channel_id, quakeInfoNotifyData.min_intensity, quakeInfoNotifyData.mention_roles, quakeInfoNotifyData.image, 1);
           await responseRelative.update({

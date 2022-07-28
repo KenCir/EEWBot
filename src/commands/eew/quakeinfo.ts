@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction, CacheType, MessageEmbed, MessageAttachment } from 'discord.js';
+import { CommandInteraction, CacheType, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import EEWBot from '../../EEWBot';
 import { Command } from '../../interfaces/Command';
 
@@ -24,16 +24,18 @@ export default class extends Command {
     if (quakeInfo.epicenter === '') {
       await interaction.followUp({
         embeds: [
-          new MessageEmbed()
-            .setTitle('地震情報')
+          new EmbedBuilder()
+            .setTitle('最新の地震情報')
             .setDescription(`${quakeInfo.time}頃、最大震度${quakeInfo.intensity}の地震がありました、今後の地震情報に注意してください`)
-            .addField('震源', '調査中')
-            .addField('最大震度', quakeInfo.intensity)
-            .addField('発生時刻', `${quakeInfo.time}頃`)
-            .addField('震源の深さ', '調査中')
-            .addField('マグニチュード', '調査中')
-            .addField('北緯', '調査中')
-            .addField('東経', '調査中')
+            .addFields([
+              { name: '震源', value: '調査中' },
+              { name: '最大震度', value: quakeInfo.intensity },
+              { name: '発生時刻', value: `${quakeInfo.time}頃` },
+              { name: '震源の深さ', value: '調査中' },
+              { name: 'マグニチュード', value: '調査中' },
+              { name: '北緯', value: '調査中' },
+              { name: '東経', value: '調査中' },
+            ])
             .setFooter({ text: 'NHK地震情報' })
             .setTimestamp(),
         ],
@@ -41,7 +43,7 @@ export default class extends Command {
 
       await interaction.followUp({
         files: [
-          new MessageAttachment(quakeInfo.detail),
+          new AttachmentBuilder(quakeInfo.detail),
         ],
       });
 
@@ -49,7 +51,7 @@ export default class extends Command {
         for (const relative of quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${relative.intensity}を観測した場所`)
                 .setDescription(relative.points.join('\n')),
             ],
@@ -60,7 +62,7 @@ export default class extends Command {
         for (const relative in quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                 .setDescription(quakeInfo.relatives[relative].points.join('\n')),
             ],
@@ -71,24 +73,28 @@ export default class extends Command {
     else {
       await interaction.followUp({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('最新の地震情報')
             .setDescription(`${quakeInfo.time}頃、${quakeInfo.epicenter}を震源とする最大震度${quakeInfo.intensity}の地震がありました`)
-            .addField('最大震度', quakeInfo.intensity)
-            .addField('発生時刻', `${quakeInfo.time}頃`)
-            .addField('震源の深さ', quakeInfo.depth)
-            .addField('マグニチュード', quakeInfo.magnitude)
-            .addField('北緯', quakeInfo.latitudey.replace('北緯', ''))
-            .addField('東経', quakeInfo.longitude.replace('東経', ''))
+            .addFields([
+              { name: '震源', value: quakeInfo.epicenter },
+              { name: '最大震度', value: quakeInfo.intensity },
+              { name: '発生時刻', value: `${quakeInfo.time}頃` },
+              { name: '震源の深さ', value: quakeInfo.depth },
+              { name: 'マグニチュード', value: quakeInfo.magnitude },
+              { name: '北緯', value: quakeInfo.latitudey },
+              { name: '東経', value: quakeInfo.longitude },
+            ])
+            .setFooter({ text: 'NHK地震情報' })
             .setTimestamp(),
         ],
       });
 
       await interaction.followUp({
         files: [
-          new MessageAttachment(quakeInfo.detail),
-          new MessageAttachment(quakeInfo.local),
-          new MessageAttachment(quakeInfo.global),
+          new AttachmentBuilder(quakeInfo.detail),
+          new AttachmentBuilder(quakeInfo.local),
+          new AttachmentBuilder(quakeInfo.global),
         ],
       });
 
@@ -96,7 +102,7 @@ export default class extends Command {
         for (const relative of quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${relative.intensity}を観測した場所`)
                 .setDescription(relative.points.join('\n')),
             ],
@@ -107,7 +113,7 @@ export default class extends Command {
         for (const relative in quakeInfo.relatives) {
           await interaction.followUp({
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setTitle(`震度${quakeInfo.relatives[relative].intensity}を観測した場所`)
                 .setDescription(quakeInfo.relatives[relative].points.join('\n')),
             ],
