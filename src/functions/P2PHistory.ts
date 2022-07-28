@@ -1,18 +1,81 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import axios from 'axios';
-import { EmbedBuilder, TextChannel } from 'discord.js';
+import { EmbedBuilder, roleMention, TextChannel } from 'discord.js';
 import EEWBot from '../EEWBot';
 import { BasicData } from '../interfaces/p2p/BasicData';
+import { JMAQuake } from '../interfaces/p2p/JMAQuake';
 import { JMATunami } from '../interfaces/p2p/JMATunami';
+import { intensityNumberToString, intensityStringToNumber } from '../utils/IntensityUtil';
+import { expresentationTypeEnumToString } from '../utils/PresentationUtil';
 import { tunamiEnumToString } from '../utils/TunamiUtil';
-const api = axios.create({ baseURL: 'https://api.p2pquake.net/v2/' });
+const api = axios.create();
 
 export default async (client: EEWBot) => {
-  const response = await api.get('history?limit=100&codes=552');
+  const response = await api.get('https://api.p2pquake.net/v2/history?codes=551&codes=552');
   (response.data as Array<BasicData>).forEach(data => {
     // 地震情報
     if (data.code === 551) {
-      // TODO: 管理者設定でNHKを通知するかP2Pを通知するかを切り替えられるようにする
+      const quakeData: JMAQuake = data as JMAQuake;
+      if (client.database.getReportedData(quakeData.id)) return;
+      client.database.addReportedData(quakeData.id);
+
+      client.database.getAllQuakeInfoChannel(intensityStringToNumber(quakeData.earthquake.maxScale))
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        .forEach(async quakeInfoChannelData => {
+          const quakeInfoChannel: TextChannel = client.channels.cache.get(quakeInfoChannelData.channel_id) as TextChannel;
+          if (!quakeInfoChannel) {
+            client.database.removeQuakeInfoChannel(quakeInfoChannelData.channel_id);
+            return;
+          }
+
+          // 震源情報が入っていないぞ！
+          if (quakeData.earthquake.hypocenter.name === '') {
+            await quakeInfoChannel.send({
+              content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
+              embeds: [
+                new EmbedBuilder()
+                  .setTitle('地震情報')
+                  .setDescription(`${quakeData.earthquake.time}頃、最大震度${intensityNumberToString(quakeData.earthquake.maxScale)}の地震がありました、今後の地震情報に注意してください`)
+                  .addFields([
+                    { name: '震源', value: quakeData.earthquake.hypocenter.name === '' ? '震源情報が未発表です' : quakeData.earthquake.hypocenter.name },
+                    { name: '最大震度', value: intensityNumberToString(quakeData.earthquake.maxScale) },
+                    { name: '発生時刻', value: `${quakeData.earthquake.time}頃` },
+                    { name: '震源の深さ', value: quakeData.earthquake.hypocenter.depth === 0 ? 'ごく浅い' : quakeData.earthquake.hypocenter.depth === -1 ? '震源情報が存在しません' : `${quakeData.earthquake.hypocenter.depth.toString()}km` },
+                    { name: 'マグニチュード', value: quakeData.earthquake.hypocenter.magnitude.toString() },
+                    { name: '北緯', value: quakeData.earthquake.hypocenter.latitude.toString() },
+                    { name: '東経', value: quakeData.earthquake.hypocenter.longitude.toString() },
+                    { name: '国内での津波の有無', value: tunamiEnumToString(quakeData.earthquake.domesticTsunami) },
+                    { name: '海外での津波の有無', value: tunamiEnumToString(quakeData.earthquake.foreignTsunami) },
+                  ])
+                  .setFooter({ text: `P2P地震情報|${quakeData.issue.source}|${expresentationTypeEnumToString(quakeData.issue.type)}|${quakeData.time}に発表しました` })
+                  .setTimestamp(),
+              ],
+            });
+          }
+          else {
+            await quakeInfoChannel.send({
+              content: quakeInfoChannelData.mention_roles.length < 1 ? '地震情報' : quakeInfoChannelData.mention_roles.map(role => roleMention(role)).join(''),
+              embeds: [
+                new EmbedBuilder()
+                  .setTitle('地震情報')
+                  .setDescription(`${quakeData.earthquake.time}頃、${quakeData.earthquake.hypocenter.name}を震源とする最大震度${intensityNumberToString(quakeData.earthquake.maxScale)}の地震がありました`)
+                  .addFields([
+                    { name: '震源', value: quakeData.earthquake.hypocenter.name === '' ? '震源情報が未発表です' : quakeData.earthquake.hypocenter.name },
+                    { name: '最大震度', value: intensityNumberToString(quakeData.earthquake.maxScale) },
+                    { name: '発生時刻', value: `${quakeData.earthquake.time}頃` },
+                    { name: '震源の深さ', value: quakeData.earthquake.hypocenter.depth === 0 ? 'ごく浅い' : quakeData.earthquake.hypocenter.depth === -1 ? '震源情報が存在しません' : quakeData.earthquake.hypocenter.depth.toString() },
+                    { name: 'マグニチュード', value: quakeData.earthquake.hypocenter.magnitude.toString() },
+                    { name: '北緯', value: quakeData.earthquake.hypocenter.latitude.toString() },
+                    { name: '東経', value: quakeData.earthquake.hypocenter.longitude.toString() },
+                    { name: '国内での津波の有無', value: tunamiEnumToString(quakeData.earthquake.domesticTsunami) },
+                    { name: '海外での津波の有無', value: tunamiEnumToString(quakeData.earthquake.foreignTsunami) },
+                  ])
+                  .setFooter({ text: `P2P地震情報|${quakeData.issue.source}|${expresentationTypeEnumToString(quakeData.issue.type)}|${quakeData.time}に発表しました` })
+                  .setTimestamp(),
+              ],
+            });
+          }
+        });
     }
     // 津波予報
     else if (data.code === 552) {
